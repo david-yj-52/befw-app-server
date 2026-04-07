@@ -8,21 +8,30 @@ springdoc:
   packages-to-scan: com.tsh.starter.befw   # 본인 패키지 경로
 
 spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update              # 운영에는 none
+    show-sql: true
     properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
       org.hibernate.envers:
         audit_table_suffix: _HIST     # 이력 테이블명 뒤에 _HISTORY 붙임
 
 
 application:
-  group-id: @project.groupId@
-  version: @project.version@
   tenant: SITE
-  service:
+  module-name: @module-name@
+  version: @project.version@
+  service-name: @service-name@
   env: LOCAL
-  module:
-    name: befw-app
-    seq: 1
 
 
 messaging:

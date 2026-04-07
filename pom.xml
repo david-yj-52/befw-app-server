@@ -6,6 +6,7 @@
         <groupId>com.tsh.starter.befw</groupId>
         <artifactId>befw</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../befw/pom.xml</relativePath>
     </parent>
 
     <groupId>com.tsh.starter.befw</groupId>
@@ -15,6 +16,9 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
+        <module-name>befw</module-name>
+        <service-name>app-server</service-name>
+
         <befw-lib-core>1.0.0-SNAPSHOT</befw-lib-core>
     </properties>
 
@@ -25,11 +29,29 @@
             <artifactId>befw-lib-core</artifactId>
             <version>${befw-lib-core}</version>
         </dependency>
+
     </dependencies>
 
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>   <!-- 최신 버전 추천 -->
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+
+            <!-- spring-boot-maven-plugin도 있으면 좋음 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

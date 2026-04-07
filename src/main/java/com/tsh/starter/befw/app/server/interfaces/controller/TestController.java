@@ -31,6 +31,7 @@ public class TestController {
 
 	@RestController
 	public static class ServerController implements ApiApi {
+
 		@Override
 		public ResponseEntity<Void> apiServerMessagePost(ServerSampleMessage request) {
 			return null;
