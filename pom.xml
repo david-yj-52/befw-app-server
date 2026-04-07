@@ -1,27 +1,44 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
+    <parent>
+        <groupId>com.tsh.starter.befw</groupId>
+        <artifactId>befw</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.tsh.starter.befw</groupId>
-    <artifactId>befw</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+    <artifactId>befw-app-server</artifactId>
+    <packaging>jar</packaging>
+    <name>befw-app-server</name>
+    <version>1.0.0-SNAPSHOT</version>
 
-  <artifactId>befw-app-server</artifactId>
-  <packaging>jar</packaging>
-  <name>befw-app-server</name>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>21</source>
-          <target>21</target>
-          <compilerArgs>--enable-preview</compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <properties>
+        <befw-lib-core>1.0.0-SNAPSHOT</befw-lib-core>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.tsh.starter.befw</groupId>
+            <artifactId>befw-lib-core</artifactId>
+            <version>${befw-lib-core}</version>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

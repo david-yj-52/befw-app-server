@@ -15,7 +15,10 @@ spring:
 
 
 application:
-  tenant: TAS
+  group-id: @project.groupId@
+  version: @project.version@
+  tenant: SITE
+  service:
   env: LOCAL
   module:
     name: befw-app
