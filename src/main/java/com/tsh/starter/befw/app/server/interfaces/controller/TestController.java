@@ -4,28 +4,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.schema.ServerSampleMessage;
-import com.tsh.schema.ServerSampleMessageBody;
-import com.tsh.schema.ServerSampleMessageHead;
 import com.tsh.schema.api.ApiApi;
 
 public class TestController {
 
 	static void main() {
 
-		ServerSampleMessage msg = ServerSampleMessage.builder()
-			.head(ServerSampleMessageHead.builder()
-				.src(ServerSampleMessageHead.SrcEnum.AGENT)
-				.tgt(ServerSampleMessageHead.TgtEnum.AGENT)
-				.tid("TID")
-				.build())
-			.body(ServerSampleMessageBody.builder()
-				.siteId("SITE")
-				.userId("User")
-				.useYn("Y")
-				.build())
-			.build();
+		// ServerSampleMessage msg = ServerSampleMessage.builder()
+		// 	.head(ServerSampleMessageHead.builder()
+		// 		.src(ServerSampleMessageHead.SrcEnum.AGENT)
+		// 		.tgt(ServerSampleMessageHead.TgtEnum.AGENT)
+		// 		.tid("TID")
+		// 		.build())
+		// 	.body(ServerSampleMessageBody.builder()
+		// 		.siteId("SITE")
+		// 		.userId("User")
+		// 		.useYn("Y")
+		// 		.build())
+		// 	.build();
 
-		System.out.println(msg);
+		// System.out.println(msg);
 
 	}
 

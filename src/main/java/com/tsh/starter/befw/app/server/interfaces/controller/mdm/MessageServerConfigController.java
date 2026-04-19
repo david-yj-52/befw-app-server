@@ -1,15 +1,18 @@
 package com.tsh.starter.befw.app.server.interfaces.controller.mdm;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsh.schema.ServerSampleMessage;
 import com.tsh.starter.befw.app.server.apService.mdm.MessageServerConfigApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
+import com.tsh.starter.befw.lib.core.spec.in.AddMsgServerInf;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -20,14 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/mdm/server/config")
 @Slf4j
+@Validated
 public class MessageServerConfigController {
 
 	@Autowired
 	MessageServerConfigApService messageServerConfigApService;
 
 	@PostMapping
-	public ApiResponse<GnMsgSrvConnRes> generateData(ServerSampleMessage ivo) {
+	public ApiResponse<GnMsgSrvConnRes> generateData(@Valid @RequestBody AddMsgServerInf ivo) {
 		log.info("ivo: {}", ivo);
 		return this.messageServerConfigApService.generateMessageServerData(ivo);
 	}
+
 }
