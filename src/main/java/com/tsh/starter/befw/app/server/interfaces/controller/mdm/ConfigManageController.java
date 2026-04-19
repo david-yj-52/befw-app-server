@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnReq;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
+import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
 import com.tsh.starter.befw.lib.core.data.orm.common.access.CrudService;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnAccess;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
@@ -24,7 +25,7 @@ public class ConfigManageController
 
 	@Override
 	protected CrudService<GnMsgSrvConnModel, String> getService() {
-		return gnMsgSrvConnAccess;
+		return this.gnMsgSrvConnAccess;
 	}
 
 	@Override
@@ -45,7 +46,10 @@ public class ConfigManageController
 			.conn_user(req.getUser())
 			.pwd(req.getPwd())
 			.domain(req.getDomain())
-			.traceId()
+			.traceId("test_trace_id")
+			.evetNm("eventName")
+			.prevEventNm("prevEventName")
+			.useStatCd(UseStatCd.Usable)
 			.build();
 	}
 
