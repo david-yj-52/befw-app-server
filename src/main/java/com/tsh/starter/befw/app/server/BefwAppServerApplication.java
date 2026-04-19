@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {
-	"com.tsh.starter.befw.lib.core"
+	"com.tsh.starter.befw.lib.core", "com.tsh.starter.befw.app.server"
 })
-@EntityScan(basePackages = {"com.tsh.starter.befw.lib.core"})
-@EnableJpaRepositories(basePackages = "com.tsh.starter.befw.lib.core")
+@EntityScan(basePackages = {"com.tsh.starter.befw.lib.core", "com.tsh.starter.befw.app.server"})
+@EnableJpaRepositories(basePackages = {"com.tsh.starter.befw.lib.core", "com.tsh.starter.befw.app.server"})
 class BefwAppServerApplication {
 
 	public static void main(String[] args) {

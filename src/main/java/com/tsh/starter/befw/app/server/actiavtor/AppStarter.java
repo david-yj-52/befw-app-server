@@ -20,13 +20,12 @@ public class AppStarter implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 
 		log.info("application started.");
-
-		this.solaceSessionManager.init();
+		this.startConnectMessagingServer();
 
 	}
 
 	private void startConnectMessagingServer() {
-
+		this.solaceSessionManager.init();
 	}
 
 }
