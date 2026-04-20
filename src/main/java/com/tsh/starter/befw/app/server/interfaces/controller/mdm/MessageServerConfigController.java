@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.mdm.MessageServerConfigApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
+import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.spec.in.AddMsgServerInf;
 
 import jakarta.validation.Valid;
@@ -32,6 +34,11 @@ public class MessageServerConfigController {
 	@PostMapping
 	public ApiResponse<GnMsgSrvConnRes> generateData(@Valid @RequestBody AddMsgServerInf ivo) {
 		log.info("ivo: {}", ivo);
+
+		var processVo = new ApProcessVo<>().init(InterfaceType.REST, ivo, ivo.getBody());
+
+		log.info("processVo: {}", processVo);
+
 		return this.messageServerConfigApService.generateMessageServerData(ivo);
 	}
 
