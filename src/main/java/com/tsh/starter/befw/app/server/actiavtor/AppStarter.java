@@ -5,7 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import com.tsh.starter.befw.lib.core.messaging.solace.SolaceSessionManager;
+import com.tsh.starter.befw.lib.core.messaging.MessagingConfManager;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AppStarter implements ApplicationRunner {
 
 	@Autowired
-	SolaceSessionManager solaceSessionManager;
+	MessagingConfManager messagingConfManager;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -25,7 +25,7 @@ public class AppStarter implements ApplicationRunner {
 	}
 
 	private void startConnectMessagingServer() {
-		this.solaceSessionManager.init();
+		this.messagingConfManager.init();
 	}
 
 }
