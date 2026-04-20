@@ -7,13 +7,16 @@ import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.AbstractApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnAccess;
+import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.spec.in.AddMsgServerInf;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * BIZ 서비스는
+ * Ap Service
+ * 1. Data Access 로직 처리
+ * 2.
  */
 @Service
 @Slf4j
@@ -22,22 +25,38 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 	@Autowired
 	GnMsgSrvConnAccess gnMsgSrvConnAccess;
 
-	private ApiResponse<GnMsgSrvConnRes> generateMessageServerData(AddMsgServerInf ivo) {
-
-		// this.gnMsgSrvConnAccess.create()
-		return null;
-
-	}
-
 	@Override
-	protected void main(ApProcessVo<AddMsgServerInf.Body> procVo) {
+	protected void mainAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 		log.info("proVo:{}", procVo);
+
+		GnMsgSrvConnModel model = this.generateNewServerInfo(procVo);
+		this.gnMsgSrvConnAccess.create(model);
+
+	}
+
+	private GnMsgSrvConnModel generateNewServerInfo(ApProcessVo<AddMsgServerInf.Body> procVo) {
+
+		AddMsgServerInf.Body body = procVo.getReceiveMsgInfo().getBody();
+
+		GnMsgSrvConnModel accessModel = GnMsgSrvConnModel.builder()
+			.solNm(body.getSolNm())
+			.env(body.getEnv())
+			.host(body.getHost())
+			.port(body.getPort())
+			.conn_user(body.getConUserId())
+			.pwd(body.getPwd())
+			.domain(body.getDomain())
+			.build();
+		GnMsgSrvConnModel insertedModel = this.gnMsgSrvConnAccess.create(accessModel, procVo);
+		log.info("complete save message server info.");
+		return insertedModel;
+
 	}
 
 	@Override
-	protected ApiResponse<GnMsgSrvConnRes> response(ApProcessVo<AddMsgServerInf.Body> procVo) {
+	protected ApiResponse<GnMsgSrvConnRes> replyAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 		log.info("response");
-		log.info("proVo:{}", procVo);
 		return null;
 	}
+
 }

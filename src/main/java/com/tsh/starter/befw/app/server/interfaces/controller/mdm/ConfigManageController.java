@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnReq;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
-import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
 import com.tsh.starter.befw.lib.core.data.orm.common.access.CrudService;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnAccess;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
@@ -32,25 +31,7 @@ public class ConfigManageController
 	protected GnMsgSrvConnModel toModel(GnMsgSrvConnReq req) {
 		log.info("reqVo : {}", req);
 
-		return GnMsgSrvConnModel.builder()
-			.srvId(req.getSrvId())
-			.tenant(req.getTenant())
-			.evetNm(req.getEvetNm())
-			.prevEventNm(req.getPrevEventNm())
-			.actCm(req.getActCm())
-			.actCd(req.getActCd())
-			.solNm(req.getSolNm())
-			.env(req.getEnv())
-			.host(req.getHost())
-			.port(req.getPort())
-			.conn_user(req.getUser())
-			.pwd(req.getPwd())
-			.domain(req.getDomain())
-			.traceId("test_trace_id")
-			.evetNm("eventName")
-			.prevEventNm("prevEventName")
-			.useStatCd(UseStatCd.Usable)
-			.build();
+		return null;
 	}
 
 	@Override

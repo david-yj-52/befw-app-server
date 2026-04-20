@@ -3,6 +3,7 @@ package com.tsh.starter.befw.app.server.apService;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
@@ -11,6 +12,7 @@ import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Service
 public abstract class AbstractApService<R, T extends ApMessageBody> implements ApService<R, T> {
 
 	// run 호출 → execute 자동 호출
@@ -28,35 +30,35 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 
 	// pre → main → post 순차 호출
 	private ApiResponse<R> execute(ApProcessVo<T> procVo) {
-		pre(procVo);
+		preAction(procVo);
 		procVo.setPreComp(true);
 
-		main(procVo);  // main은 abstract - 강제 구현
+		mainAction(procVo);  // main은 abstract - 강제 구현
 		procVo.setMainComp(true);
 
-		post(procVo);
+		postAction(procVo);
 		procVo.setPostComp(true);
 
-		ApiResponse<R> result = response(procVo);
+		ApiResponse<R> result = replyAction(procVo);
 		procVo.setResponseComp(true);
-		
-		return response(procVo);
+
+		return result;
 	}
 
 	// 선택적 오버라이드
-	protected void pre(ApProcessVo<?> procVo) {
+	protected void preAction(ApProcessVo<?> procVo) {
 		log.info("[PRE] execute pre process");
 	}
 
 	// 강제 구현
-	protected abstract void main(ApProcessVo<T> procVo);
+	protected abstract void mainAction(ApProcessVo<T> procVo);
 
 	// 선택적 오버라이드
-	protected void post(ApProcessVo<T> procVo) {
+	protected void postAction(ApProcessVo<T> procVo) {
 		log.info("[POST] execute post process");
 	}
 
 	// 강제 구현
-	protected abstract ApiResponse<R> response(ApProcessVo<T> procVo);
+	protected abstract ApiResponse<R> replyAction(ApProcessVo<T> procVo);
 
 }
