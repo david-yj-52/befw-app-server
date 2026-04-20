@@ -29,28 +29,22 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 	protected void mainAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 		log.info("proVo:{}", procVo);
 
-		GnMsgSrvConnModel model = this.generateNewServerInfo(procVo);
-		this.gnMsgSrvConnAccess.create(model);
+		GnMsgSrvConnModel model = generateModel(procVo.getReceiveMsgInfo().getBody());
+		gnMsgSrvConnAccess.upsert(procVo, model, "uk_msg_srv_conn_01");
 
 	}
 
-	private GnMsgSrvConnModel generateNewServerInfo(ApProcessVo<AddMsgServerInf.Body> procVo) {
+	private GnMsgSrvConnModel generateModel(AddMsgServerInf.Body body) {
 
-		AddMsgServerInf.Body body = procVo.getReceiveMsgInfo().getBody();
-
-		GnMsgSrvConnModel accessModel = GnMsgSrvConnModel.builder()
+		return GnMsgSrvConnModel.builder()
 			.solNm(body.getSolNm())
 			.env(body.getEnv())
 			.host(body.getHost())
 			.port(body.getPort())
-			.conn_user(body.getConUserId())
+			.connUser(body.getConUserId())
 			.pwd(body.getPwd())
 			.domain(body.getDomain())
 			.build();
-		GnMsgSrvConnModel insertedModel = this.gnMsgSrvConnAccess.create(accessModel, procVo);
-		log.info("complete save message server info.");
-		return insertedModel;
-
 	}
 
 	@Override

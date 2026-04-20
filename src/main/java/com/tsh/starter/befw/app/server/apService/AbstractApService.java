@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.tsh.starter.befw.app.server.ApProcessVo;
+import com.tsh.starter.befw.lib.core.data.orm.common.tenant.TenantContext;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
 
@@ -30,6 +31,9 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 
 	// pre → main → post 순차 호출
 	private ApiResponse<R> execute(ApProcessVo<T> procVo) {
+
+		TenantContext.set(procVo.getTenant());
+
 		preAction(procVo);
 		procVo.setPreComp(true);
 
@@ -55,7 +59,7 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 
 	// 선택적 오버라이드
 	protected void postAction(ApProcessVo<T> procVo) {
-		log.info("[POST] execute post process");
+		log.info("[POST] execute post process. evntName: {}", procVo.getEventNm());
 	}
 
 	// 강제 구현

@@ -36,7 +36,7 @@ public class GnMsgSrvConnRes {
 			.env(model.getEnv())
 			.host(model.getHost())
 			.port(model.getPort())
-			.user(model.getConn_user())
+			.user(model.getConnUser())
 			.domain(model.getDomain())
 			.createdAt(model.getCreatedAt())
 			.modifiedAt(model.getModifiedAt())
