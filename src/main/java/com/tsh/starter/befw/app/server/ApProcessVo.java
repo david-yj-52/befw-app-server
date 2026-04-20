@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
@@ -19,6 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ApProcessVo<T extends ApMessageBody> extends ApCommonProcessVo<T> {
 
 	String serverInstanceId;
+	boolean preComp;
+	boolean mainComp;
+	boolean postComp;
+	boolean responseComp;
+
+	ConcurrentHashMap<String, Object> objMap;
 
 	@Override
 	public ApCommonProcessVo<T> init(ApMessage ivo) {
@@ -30,6 +38,7 @@ public class ApProcessVo<T extends ApMessageBody> extends ApCommonProcessVo<T> {
 	public ApProcessVo<T> init(InterfaceType interfaceType, ApMessage ivo, T body) {
 		super.initCommon(interfaceType, ivo, body);
 
+		this.objMap = new ConcurrentHashMap<>();
 		// TODO 서버 이름 가져오는 Util 호출 필요
 		this.serverInstanceId = "SERVER_ID";
 		return this;

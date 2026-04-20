@@ -35,11 +35,12 @@ public class MessageServerConfigController {
 	public ApiResponse<GnMsgSrvConnRes> generateData(@Valid @RequestBody AddMsgServerInf ivo) {
 		log.info("ivo: {}", ivo);
 
-		var processVo = new ApProcessVo<>().init(InterfaceType.REST, ivo, ivo.getBody());
+		ApProcessVo<AddMsgServerInf.Body> processVo = new ApProcessVo<AddMsgServerInf.Body>()
+			.init(InterfaceType.REST, ivo, ivo.getBody());
 
 		log.info("processVo: {}", processVo);
 
-		return this.messageServerConfigApService.generateMessageServerData(ivo);
+		return this.messageServerConfigApService.run(processVo);
 	}
 
 }
