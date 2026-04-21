@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 import com.solacesystems.jcsmp.BytesXMLMessage;
 import com.solacesystems.jcsmp.EndpointProperties;
 import com.solacesystems.jcsmp.JCSMPException;
+import com.tsh.starter.befw.app.server.MessageHandlerRegistry;
+import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceMessageReceiver;
 import com.tsh.starter.befw.lib.core.messaging.solace.util.SolaceQueueDiscovery;
+import com.tsh.starter.befw.lib.core.spec.constant.ApMessageList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,9 @@ public class SolaceTaskReceiver implements SolaceMessageReceiver {
 
 	@Autowired
 	SolaceQueueDiscovery solaceQueueDiscovery;
+
+	@Autowired
+	MessageHandlerRegistry registry;
 
 	@Override
 	public List<String> getQueueNames() {
@@ -40,7 +46,9 @@ public class SolaceTaskReceiver implements SolaceMessageReceiver {
 		// Tomcat Controller와 동일하게 그냥 동기 호출
 		String payload = extractPayload(message);
 
-		// TODO Call ApService
+		ApMessageList eventName = message.getProperties().get("eventName");
+		registry.getHandler(eventName).handle(payload, InterfaceType.SOLACE);
+
 		// 리턴 → Gateway ACK 전송
 
 	}
