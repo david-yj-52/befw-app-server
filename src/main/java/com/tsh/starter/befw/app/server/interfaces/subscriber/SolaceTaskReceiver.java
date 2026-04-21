@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.solacesystems.jcsmp.BytesXMLMessage;
 import com.solacesystems.jcsmp.EndpointProperties;
 import com.solacesystems.jcsmp.JCSMPException;
-import com.tsh.starter.befw.lib.core.messaging.solace.SolaceMessageReceiver;
+import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceMessageReceiver;
 import com.tsh.starter.befw.lib.core.messaging.solace.util.SolaceQueueDiscovery;
 
 import lombok.RequiredArgsConstructor;

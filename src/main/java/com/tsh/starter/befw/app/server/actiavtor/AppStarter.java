@@ -5,11 +5,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.solacesystems.jcsmp.JCSMPException;
 import com.solacesystems.jcsmp.JCSMPSession;
 import com.tsh.starter.befw.lib.core.config.MessagingProperties;
 import com.tsh.starter.befw.lib.core.messaging.MessagingConfManager;
-import com.tsh.starter.befw.lib.core.messaging.solace.SolaceInboundGateway;
-import com.tsh.starter.befw.lib.core.messaging.solace.SolaceInboundManager;
+import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceInboundGateway;
+import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceInboundManager;
+import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +30,9 @@ public class AppStarter implements ApplicationRunner {
 
 	@Autowired
 	SolaceInboundManager solaceInboundManager;
+
+	@Autowired
+	SolaceMessagePublisher solaceMessagePublisher;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -48,7 +53,11 @@ public class AppStarter implements ApplicationRunner {
 			}
 
 			if (Boolean.parseBoolean(messagingProperties.getSolacePubEnable())) {
-				// TODO Solace Publish init
+				try {
+					solaceMessagePublisher.setSession(solaceSession);
+				} catch (JCSMPException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 	}
