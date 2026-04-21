@@ -1,4 +1,4 @@
-package com.tsh.starter.befw.app.server.interfaces.handler;
+package com.tsh.starter.befw.app.server.interfaces.controller;
 
 import java.util.stream.Collectors;
 

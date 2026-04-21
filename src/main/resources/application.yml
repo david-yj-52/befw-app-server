@@ -27,11 +27,24 @@ spring:
 
 
 application:
-  tenant: SITE
+  tenant: TSH
   module-name: @module-name@
   version: @project.version@
   service-name: @service-name@
   env: LOCAL
+  messaging:
+    credential:
+      solace: ${SOLACE_SEMP_CREDENTIAL}
+
+    enable:
+      solace:
+        enable: true
+        pub: true
+        sub: true
+      kafka:
+        enable: true
+        pub: true
+        sub: true
 
 
 messaging:

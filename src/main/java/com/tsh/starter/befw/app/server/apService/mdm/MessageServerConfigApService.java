@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.apService.mdm;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,7 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 		log.info("proVo:{}", procVo);
 
 		GnMsgSrvConnModel model = generateModel(procVo.getReceiveMsgInfo().getBody());
-		gnMsgSrvConnAccess.upsert(procVo, model, "uk_msg_srv_conn_01");
+		gnMsgSrvConnAccess.upsert(procVo, model, GnMsgSrvConnModel.UK01);
 
 	}
 
@@ -44,6 +46,7 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 			.connUser(body.getConUserId())
 			.pwd(body.getPwd())
 			.domain(body.getDomain())
+			.defaultYn(body.getDefaultYn())
 			.build();
 	}
 
@@ -53,4 +56,8 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 		return null;
 	}
 
+	@Override
+	public CompletableFuture<ApiResponse<GnMsgSrvConnRes>> runAsync(ApProcessVo<AddMsgServerInf.Body> procVo) {
+		return null;
+	}
 }

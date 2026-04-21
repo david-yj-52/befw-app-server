@@ -1,8 +1,5 @@
 package com.tsh.starter.befw.app.server.apService;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.tsh.starter.befw.app.server.ApProcessVo;
@@ -20,13 +17,6 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 	@Override
 	public ApiResponse<R> run(ApProcessVo<T> procVo) {
 		return execute(procVo);
-	}
-
-	// runAsync 호출 → execute 자동 호출
-	@Override
-	@Async    // TODO Async Thread Pool 설정 필요
-	public CompletableFuture<ApiResponse<R>> runAsync(ApProcessVo<T> procVo) {
-		return CompletableFuture.completedFuture(execute(procVo));
 	}
 
 	// pre → main → post 순차 호출
