@@ -22,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SolaceTaskReceiver implements SolaceMessageReceiver {
 
+	public static final String HEAD_EVENT_NM = "eventName";
+
 	@Autowired
 	SolaceQueueDiscovery solaceQueueDiscovery;
 
@@ -45,11 +47,11 @@ public class SolaceTaskReceiver implements SolaceMessageReceiver {
 	public void onMessage(BytesXMLMessage message) throws Exception {
 		// Tomcat Controller와 동일하게 그냥 동기 호출
 		String payload = extractPayload(message);
+		String eventString = message.getProperties().getString(HEAD_EVENT_NM);
+		log.info("payload:{} evetName:{}", payload, eventString);
 
-		ApMessageList eventName = message.getProperties().get("eventName");
+		ApMessageList eventName = ApMessageList.valueOf(eventString);
 		registry.getHandler(eventName).handle(payload, InterfaceType.SOLACE);
-
-		// 리턴 → Gateway ACK 전송
 
 	}
 
