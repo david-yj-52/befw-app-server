@@ -1,16 +1,25 @@
 package com.tsh.starter.befw.app.server.apService.mdm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.solacesystems.jcsmp.JCSMPException;
 import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.AbstractApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnAccess;
 import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
+import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
+import com.tsh.starter.befw.lib.core.messaging.solace.vo.SolaceOutBoundMessage;
 import com.tsh.starter.befw.lib.core.spec.constant.ApMessageList;
 import com.tsh.starter.befw.lib.core.spec.in.AddMsgServerInf;
 
@@ -27,6 +36,9 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 
 	@Autowired
 	GnMsgSrvConnAccess gnMsgSrvConnAccess;
+
+	@Autowired
+	SolaceMessagePublisher publisher;
 
 	@Override
 	public ApMessageList getSupportedEvent() {
@@ -70,7 +82,47 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 
 	@Override
 	protected ApiResponse<GnMsgSrvConnRes> replyAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
-		log.info("response");
+
+		SolaceMessageInfoVo msgInfo = procVo.getMsgInfoVo();
+		String selectorKey = msgInfo.getSelectorKey();
+		String responseTopicName = msgInfo.getResponseTopic();
+
+		String response = "{\n"
+			+ "  \"head\": {\n"
+			+ "    \"src\": \"SERVER\",\n"
+			+ "    \"tgt\": \"UI\",\n"
+			+ "    \"traceId\": \"string\",\n"
+			+ "    \"eventNm\": \"InitializeData\"\n"
+			+ "  },\n"
+			+ "  \"body\": {\n"
+			+ "    \"result\": \"SUCCESS\"\n"
+			+ "  }\n"
+			+ "}";
+
+		if (StringUtils.hasText(selectorKey) && StringUtils.hasText(responseTopicName)) {
+
+			log.info("response required.");
+			Map<String, Object> map = new HashMap<>();
+			map.put(SolaceTaskReceiver.PROP_EVENT_NM, procVo.getEventNm());
+			map.put(SolaceTaskReceiver.PROP_SELECT_KEY, selectorKey);
+			map.put(SolaceTaskReceiver.PROP_RESP_TOPIC, responseTopicName);
+
+			SolaceOutBoundMessage msg = SolaceOutBoundMessage.builder()
+				.eventNm(procVo.getEventNm())
+				.destination(responseTopicName)
+				.payload(response)
+				.msgHeader(map)
+				.build();
+
+			try {
+				this.publisher.publishToTopic(msg);
+			} catch (JCSMPException e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+
+		// TODO Response object definition required.
 		return null;
 	}
 

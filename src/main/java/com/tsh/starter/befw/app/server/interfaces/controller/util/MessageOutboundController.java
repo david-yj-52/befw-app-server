@@ -34,7 +34,7 @@ public class MessageOutboundController {
 
 		ApMessageList msgEventName = ApMessageList.valueOf(eventName);
 		Map<String, Object> map = new HashMap<>();
-		map.put(SolaceTaskReceiver.HEAD_EVENT_NM, msgEventName);
+		map.put(SolaceTaskReceiver.PROP_EVENT_NM, msgEventName);
 
 		SolaceOutBoundMessage msg = SolaceOutBoundMessage.builder()
 			.eventNm(msgEventName)

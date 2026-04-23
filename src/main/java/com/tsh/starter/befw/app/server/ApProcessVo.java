@@ -2,7 +2,9 @@ package com.tsh.starter.befw.app.server;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
 import com.tsh.starter.befw.lib.core.ApMessage;
+import com.tsh.starter.befw.lib.core.apService.util.ServerNameUtil;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
 import com.tsh.starter.befw.lib.core.spec.process.ApCommonProcessVo;
@@ -26,6 +28,10 @@ public class ApProcessVo<T extends ApMessageBody> extends ApCommonProcessVo<T> {
 	boolean postComp;
 	boolean responseComp;
 
+	boolean logicCompYn;
+
+	SolaceMessageInfoVo msgInfoVo;
+
 	ConcurrentHashMap<String, Object> objMap;
 
 	@Override
@@ -39,8 +45,7 @@ public class ApProcessVo<T extends ApMessageBody> extends ApCommonProcessVo<T> {
 		super.initCommon(interfaceType, ivo, body);
 
 		this.objMap = new ConcurrentHashMap<>();
-		// TODO 서버 이름 가져오는 Util 호출 필요
-		this.serverInstanceId = "SERVER_ID";
+		this.serverInstanceId = ServerNameUtil.getHostName();
 		return this;
 	}
 

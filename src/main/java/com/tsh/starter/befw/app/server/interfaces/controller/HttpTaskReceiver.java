@@ -27,7 +27,7 @@ public class HttpTaskReceiver {
 	public void run(@RequestParam ApMessageList eventName, @RequestBody String payload) throws Exception {
 
 		log.info("eventName:{} , payload:{}", eventName.name(), payload);
-		registry.getHandler(eventName).handle(payload, InterfaceType.REST);
+		registry.getHandler(eventName).handle(payload, InterfaceType.REST, null);
 
 	}
 }

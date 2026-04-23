@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsh.starter.befw.app.server.ApProcessVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.orm.common.tenant.TenantContext;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
@@ -23,10 +24,11 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 	protected abstract Class<? extends ApMessage> getIvoClass();
 
 	@Override
-	public void handle(String payload, InterfaceType interfaceType) throws Exception {
+	public void handle(String payload, InterfaceType interfaceType, SolaceMessageInfoVo infoVo) throws Exception {
 		ApMessage ivo = objectMapper.readValue(payload, getIvoClass());
 		// T 타입 추출 및 procVo 생성은 각 서비스에서 init 방식 활용
 		ApProcessVo<T> procVo = buildProcessVo(interfaceType, ivo);
+		procVo.setMsgInfoVo(infoVo);
 		run(procVo);
 	}
 
