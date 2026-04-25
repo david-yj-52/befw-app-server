@@ -45,19 +45,25 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 
 		TenantContext.set(procVo.getTenant());
 
-		preAction(procVo);
-		procVo.setPreComp(true);
+		try {
+			preAction(procVo);
+			procVo.setPreComp(true);
 
-		mainAction(procVo);  // main은 abstract - 강제 구현
-		procVo.setMainComp(true);
+			mainAction(procVo);  // main은 abstract - 강제 구현
+			procVo.setMainComp(true);
 
-		postAction(procVo);
-		procVo.setPostComp(true);
+			postAction(procVo);
+			procVo.setPostComp(true);
 
-		ApiResponse<R> result = replyAction(procVo);
-		procVo.setResponseComp(true);
+			ApiResponse<R> result = resultAction(procVo);
+			procVo.setResponseComp(true);
 
-		return result;
+			return result;
+
+			// TODO ApService custom exception required
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	// 선택적 오버라이드
@@ -66,7 +72,7 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 	}
 
 	// 강제 구현
-	protected abstract void mainAction(ApProcessVo<T> procVo);
+	protected abstract void mainAction(ApProcessVo<T> procVo) throws Exception;
 
 	// 선택적 오버라이드
 	protected void postAction(ApProcessVo<T> procVo) {
@@ -74,6 +80,6 @@ public abstract class AbstractApService<R, T extends ApMessageBody> implements A
 	}
 
 	// 강제 구현
-	protected abstract ApiResponse<R> replyAction(ApProcessVo<T> procVo);
+	protected abstract ApiResponse<R> resultAction(ApProcessVo<T> procVo);
 
 }

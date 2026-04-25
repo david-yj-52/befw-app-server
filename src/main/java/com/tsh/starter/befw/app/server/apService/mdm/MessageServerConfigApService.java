@@ -81,7 +81,7 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 	}
 
 	@Override
-	protected ApiResponse<GnMsgSrvConnRes> replyAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
+	protected ApiResponse<GnMsgSrvConnRes> resultAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 
 		SolaceMessageInfoVo msgInfo = procVo.getMsgInfoVo();
 		String selectorKey = msgInfo.getSelectorKey();
