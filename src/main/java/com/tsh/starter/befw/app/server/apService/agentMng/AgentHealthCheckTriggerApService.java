@@ -15,8 +15,8 @@ import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.constant.MsgRepStatCd;
-import com.tsh.starter.befw.lib.core.data.orm.GnSolMsgRep.GnSolMsgRepAccess;
-import com.tsh.starter.befw.lib.core.data.orm.GnSolMsgRep.GnSolMsgRepModel;
+import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepAccess;
+import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
