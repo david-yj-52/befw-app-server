@@ -14,8 +14,8 @@ import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvCon
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
-import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnAccess;
-import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnAccess;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConnRes, AddMsgServerInf.Body> {
 
 	@Autowired
-	GnMsgSrvConnAccess gnMsgSrvConnAccess;
+	GsMsgSrvConnAccess gsMsgSrvConnAccess;
 
 	@Autowired
 	SolaceMessagePublisher publisher;
@@ -61,14 +61,14 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 	protected void mainAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 		log.info("proVo:{}", procVo);
 
-		GnMsgSrvConnModel model = generateModel(procVo.getReceiveMsgInfo().getBody());
-		gnMsgSrvConnAccess.upsert(procVo, model, GnMsgSrvConnModel.UK01);
+		GsMsgSrvConnModel model = generateModel(procVo.getReceiveMsgInfo().getBody());
+		gsMsgSrvConnAccess.upsert(procVo, model, GsMsgSrvConnModel.UK01);
 
 	}
 
-	private GnMsgSrvConnModel generateModel(AddMsgServerInf.Body body) {
+	private GsMsgSrvConnModel generateModel(AddMsgServerInf.Body body) {
 
-		return GnMsgSrvConnModel.builder()
+		return GsMsgSrvConnModel.builder()
 			.solNm(body.getSolNm())
 			.env(body.getEnv())
 			.host(body.getHost())

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.tsh.starter.befw.lib.core.data.constant.MessagingSolutionType;
 import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
-import com.tsh.starter.befw.lib.core.data.orm.gnMsgSrvConn.GnMsgSrvConnModel;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnModel;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class GnMsgSrvConnRes {
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 
-	public static GnMsgSrvConnRes from(GnMsgSrvConnModel model) {
+	public static GnMsgSrvConnRes from(GsMsgSrvConnModel model) {
 		return GnMsgSrvConnRes.builder()
 			.objId(model.getObjId())
 			.srvId(model.getSrvId())

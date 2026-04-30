@@ -14,8 +14,8 @@ import com.tsh.starter.befw.app.server.apService.AbstractApService;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.constant.MsgRepStatCd;
-import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepAccess;
-import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepModel;
+import com.tsh.starter.befw.lib.core.data.orm.messageReply.gnSolMsgRep.GsSolMsgRepAccess;
+import com.tsh.starter.befw.lib.core.data.orm.messageReply.gnSolMsgRep.GsSolMsgRepModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class HealthCheckRepApService extends AbstractApService<ApProcessVo<HealthCheckRep.Body>, HealthCheckRep.Body> {
 
 	@Autowired
-	GnSolMsgRepAccess gnSolMsgRepAccess;
+	GsSolMsgRepAccess gsSolMsgRepAccess;
 
 	@Autowired
 	SolaceMessagePublisher solaceMessagePublisher;
@@ -63,19 +63,19 @@ public class HealthCheckRepApService extends AbstractApService<ApProcessVo<Healt
 
 		HealthCheckRep.Body body = procVo.getReceiveMsgInfo().getBody();
 
-		GnSolMsgRepModel searchModel = GnSolMsgRepModel.builder()
+		GsSolMsgRepModel searchModel = GsSolMsgRepModel.builder()
 			.reqSrvNm(body.getReqSrvNm())
 			.reqTraceId(body.getReqTraceId())
 			.build();
 
-		GnSolMsgRepModel model = this.gnSolMsgRepAccess.findByUk(GnSolMsgRepModel.UK01, searchModel);
+		GsSolMsgRepModel model = this.gsSolMsgRepAccess.findByUk(GsSolMsgRepModel.UK01, searchModel);
 		if (model == null) {
 			log.error("get response but, fail to fetch reply info.");
 			throw new Exception("");
 		}
 
 		model.setRepStatCd(MsgRepStatCd.Response);
-		this.gnSolMsgRepAccess.update(model.getObjId(), model);
+		this.gsSolMsgRepAccess.update(model.getObjId(), model);
 		log.info("update statCd into Response. objId:{}", model.getObjId());
 
 		this.sendHealthCheckReply(procVo, model);
@@ -87,7 +87,7 @@ public class HealthCheckRepApService extends AbstractApService<ApProcessVo<Healt
 		return null;
 	}
 
-	private void sendHealthCheckReply(ApProcessVo<HealthCheckRep.Body> procVo, GnSolMsgRepModel model) throws
+	private void sendHealthCheckReply(ApProcessVo<HealthCheckRep.Body> procVo, GsSolMsgRepModel model) throws
 		JsonProcessingException, JCSMPException {
 
 		HealthCheckRep.Body body = procVo.getReceiveMsgInfo().getBody();

@@ -15,8 +15,8 @@ import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.constant.MsgRepStatCd;
-import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepAccess;
-import com.tsh.starter.befw.lib.core.data.orm.gnSolMsgRep.GnSolMsgRepModel;
+import com.tsh.starter.befw.lib.core.data.orm.messageReply.gnSolMsgRep.GsSolMsgRepAccess;
+import com.tsh.starter.befw.lib.core.data.orm.messageReply.gnSolMsgRep.GsSolMsgRepModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
@@ -37,7 +37,7 @@ public class AgentHealthCheckTriggerApService extends AbstractApService<ApProces
 	SolaceMessagePublisher messagePublisher;
 
 	@Autowired
-	GnSolMsgRepAccess gnSolMsgRepAccess;
+	GsSolMsgRepAccess gsSolMsgRepAccess;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -122,17 +122,17 @@ public class AgentHealthCheckTriggerApService extends AbstractApService<ApProces
 
 		log.info("start register solace call back message. traceId:{}", procVo.getTraceId());
 
-		GnSolMsgRepModel storedModel = this.gnSolMsgRepAccess.create(this.generateModel(procVo), procVo);
+		GsSolMsgRepModel storedModel = this.gsSolMsgRepAccess.create(this.generateModel(procVo), procVo);
 
 		log.info("complete create model. objId:{}", storedModel.getObjId());
 
 	}
 
-	private GnSolMsgRepModel generateModel(ApProcessVo<?> procVo) {
+	private GsSolMsgRepModel generateModel(ApProcessVo<?> procVo) {
 		log.info("start generate model");
 
 		SolaceMessageInfoVo infoVo = procVo.getMsgInfoVo();
-		GnSolMsgRepModel model = GnSolMsgRepModel.builder()
+		GsSolMsgRepModel model = GsSolMsgRepModel.builder()
 			.reqSrvNm(ApSystemList.SERVER.name())
 			.reqTraceId(procVo.getTraceId())
 			.recvEvntNm(procVo.getEventNm())
