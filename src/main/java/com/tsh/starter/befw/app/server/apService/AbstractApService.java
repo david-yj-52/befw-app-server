@@ -8,8 +8,8 @@ import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.orm.common.tenant.TenantContext;
-import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
+import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
 import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
 
 import lombok.extern.slf4j.Slf4j;

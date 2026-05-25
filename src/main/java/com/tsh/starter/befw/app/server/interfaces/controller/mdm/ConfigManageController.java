@@ -8,7 +8,7 @@ import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvCon
 import com.tsh.starter.befw.lib.core.data.orm.common.access.CrudService;
 import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnAccess;
 import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnModel;
-import com.tsh.starter.befw.lib.core.interfaces.AbstractCrudController;
+import com.tsh.starter.befw.lib.core.interfaces.rest.AbstractCrudController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

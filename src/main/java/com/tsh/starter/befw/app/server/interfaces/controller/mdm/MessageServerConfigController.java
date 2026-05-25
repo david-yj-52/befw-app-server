@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.mdm.MessageServerConfigApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
-import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
+import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
 import com.tsh.starter.befw.lib.core.spec.in.AddMsgServerInf;
 
 import jakarta.validation.Valid;

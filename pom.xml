@@ -1,4 +1,4 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+﻿<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,6 +30,15 @@
             <version>${befw-lib-core}</version>
         </dependency>
 
+    
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
     </dependencies>
 
 
@@ -37,14 +46,14 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>  <!-- ← 추가 -->
+                <filtering>true</filtering>  <!-- ??異붽? -->
             </resource>
         </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>   <!-- 최신 버전 추천 -->
+                <version>3.3.1</version>   <!-- 理쒖떊 踰꾩쟾 異붿쿇 -->
                 <configuration>
                     <delimiters>
                         <delimiter>@</delimiter>
@@ -53,7 +62,7 @@
                 </configuration>
             </plugin>
 
-            <!-- spring-boot-maven-plugin도 있으면 좋음 -->
+            <!-- spring-boot-maven-plugin???덉쑝硫?醫뗭쓬 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -70,3 +79,4 @@
         </plugins>
     </build>
 </project>
+
