@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.tsh.starter.befw.lib.core.data.constant.MessagingSolutionType;
 import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
-import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnModel;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnModel;
 
 import lombok.Builder;
 import lombok.Getter;

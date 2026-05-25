@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnReq;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
 import com.tsh.starter.befw.lib.core.data.orm.common.access.CrudService;
-import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnAccess;
-import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnModel;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnAccess;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnModel;
 import com.tsh.starter.befw.lib.core.interfaces.AbstractCrudController;
 
 import lombok.RequiredArgsConstructor;

@@ -14,8 +14,8 @@ import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvCon
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
-import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnAccess;
-import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gnMsgSrvConn.GsMsgSrvConnModel;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnAccess;
+import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnModel;
 import com.tsh.starter.befw.lib.core.interfaces.ApiResponse;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
