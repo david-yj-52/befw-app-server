@@ -32,12 +32,26 @@ spring:
         audit_table_suffix: _HIST     # ?대젰 ?뚯씠釉붾챸 ?ㅼ뿉 _HISTORY 遺숈엫
 
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
 application:
   tenant: TSH
   module-name: @module-name@
   version: @project.version@
   service-name: @service-name@
   env: LOCAL
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      expiration: 900000 # 15 minutes
+      refresh-token:
+        expiration: 604800000 # 7 days
+    cors:
+      allowed-origins: ${NEXT_PUBLIC_URL:*}
   messaging:
     credential:
       solace: ${SOLACE_SEMP_CREDENTIAL}
