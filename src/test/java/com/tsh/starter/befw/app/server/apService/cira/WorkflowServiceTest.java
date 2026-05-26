@@ -58,12 +58,13 @@ class WorkflowServiceTest {
     @Test
     @DisplayName("허용되지 않은 전이 - ISSUE_INVALID_TRANSITION 에러")
     void validateTransition_notAllowed_throwsCiraException() {
-        given(statusAccess.findByIdOptional(STATUS_DONE))
-            .willReturn(Optional.of(statusModel(STATUS_DONE, "Done")));
+        // from=DONE, to=TODO → toStatusId는 TODO이므로 TODO를 스텁
+        given(statusAccess.findByIdOptional(STATUS_TODO))
+            .willReturn(Optional.of(statusModel(STATUS_TODO, "To Do")));
         given(transitionAccess.findByProjectId(PROJECT_ID))
             .willReturn(List.of(
                 transitionModel(PROJECT_ID, STATUS_TODO, STATUS_IN_PROGRESS, "Y")
-                // Done → anything 없음
+                // Done → Todo 전이 없음
             ));
 
         assertThatThrownBy(() -> workflowService.validateTransition(PROJECT_ID, STATUS_DONE, STATUS_TODO))
