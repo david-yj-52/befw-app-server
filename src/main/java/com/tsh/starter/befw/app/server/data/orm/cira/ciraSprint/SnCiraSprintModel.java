@@ -42,4 +42,7 @@ public class SnCiraSprintModel extends BaseModel {
 	@Column(name = "END_DT")
 	private java.time.LocalDate endDt;
 
+	@Column(name = "SPRINT_STAT", length = 20, nullable = false)
+	private String sprintStat;
+
 }

@@ -14,7 +14,10 @@ public enum ErrorCode {
     BOARD_NOT_FOUND("CIRA_005", "존재하지 않는 보드입니다."),
     BOARD_COLUMN_NOT_FOUND("CIRA_006", "존재하지 않는 보드 컬럼입니다."),
     COMMENT_NOT_FOUND("CIRA_007", "존재하지 않는 댓글입니다."),
-    COMMENT_NOT_AUTHOR("CIRA_008", "댓글 작성자만 수정/삭제할 수 있습니다.");
+    COMMENT_NOT_AUTHOR("CIRA_008", "댓글 작성자만 수정/삭제할 수 있습니다."),
+    SPRINT_NOT_FOUND("CIRA_009", "존재하지 않는 스프린트입니다."),
+    SPRINT_INVALID_TRANSITION("CIRA_010", "허용되지 않은 스프린트 상태 전이입니다."),
+    SPRINT_ALREADY_ACTIVE("CIRA_011", "이미 활성화된 스프린트가 존재합니다.");
 
     private final String code;
     private final String defaultMessage;

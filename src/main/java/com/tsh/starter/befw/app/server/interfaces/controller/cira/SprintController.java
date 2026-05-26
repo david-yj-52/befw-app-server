@@ -1,0 +1,87 @@
+package com.tsh.starter.befw.app.server.interfaces.controller.cira;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tsh.starter.befw.app.server.apService.cira.SprintService;
+import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
+import com.tsh.starter.befw.app.server.apService.cira.dto.SprintResponse;
+import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateSprintRequest;
+import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class SprintController {
+
+	private final SprintService sprintService;
+
+	@PostMapping("/api/v1/projects/{projectId}/sprints")
+	public ApiResponse<SprintResponse> createSprint(
+		@PathVariable String projectId,
+		@RequestBody CreateSprintRequest request
+	) {
+		return ApiResponse.created(sprintService.createSprint(projectId, request));
+	}
+
+	@GetMapping("/api/v1/projects/{projectId}/sprints")
+	public ApiResponse<List<SprintResponse>> getSprints(@PathVariable String projectId) {
+		return ApiResponse.ok(sprintService.getSprints(projectId));
+	}
+
+	@GetMapping("/api/v1/sprints/{sprintId}")
+	public ApiResponse<SprintResponse> getSprint(@PathVariable String sprintId) {
+		return ApiResponse.ok(sprintService.getSprint(sprintId));
+	}
+
+	@PutMapping("/api/v1/sprints/{sprintId}")
+	public ApiResponse<SprintResponse> updateSprint(
+		@PathVariable String sprintId,
+		@RequestBody UpdateSprintRequest request
+	) {
+		return ApiResponse.ok(sprintService.updateSprint(sprintId, request));
+	}
+
+	@DeleteMapping("/api/v1/sprints/{sprintId}")
+	public ApiResponse<Void> deleteSprint(@PathVariable String sprintId) {
+		sprintService.deleteSprint(sprintId);
+		return ApiResponse.noContent();
+	}
+
+	@PostMapping("/api/v1/sprints/{sprintId}/start")
+	public ApiResponse<SprintResponse> startSprint(@PathVariable String sprintId) {
+		return ApiResponse.ok(sprintService.startSprint(sprintId));
+	}
+
+	@PostMapping("/api/v1/sprints/{sprintId}/complete")
+	public ApiResponse<SprintResponse> completeSprint(@PathVariable String sprintId) {
+		return ApiResponse.ok(sprintService.completeSprint(sprintId));
+	}
+
+	@PostMapping("/api/v1/sprints/{sprintId}/issues/{issueId}")
+	public ApiResponse<Void> assignIssueToSprint(
+		@PathVariable String sprintId,
+		@PathVariable String issueId
+	) {
+		sprintService.assignIssueToSprint(sprintId, issueId);
+		return ApiResponse.ok(null);
+	}
+
+	@DeleteMapping("/api/v1/sprints/{sprintId}/issues/{issueId}")
+	public ApiResponse<Void> removeIssueFromSprint(
+		@PathVariable String sprintId,
+		@PathVariable String issueId
+	) {
+		sprintService.removeIssueFromSprint(sprintId, issueId);
+		return ApiResponse.noContent();
+	}
+}

@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +28,10 @@ public class SnCiraIssueAccess extends AbstractCrudService<SnCiraIssueModel, Str
 
 	public Page<SnCiraIssueModel> findAll(Specification<SnCiraIssueModel> spec, Pageable pageable) {
 		return repo.findAll(spec, pageable);
+	}
+
+	public List<SnCiraIssueModel> findBySprintId(String sprintId) {
+		return repo.findBySprintIdAndDeletedAtIsNull(sprintId);
 	}
 
 }
