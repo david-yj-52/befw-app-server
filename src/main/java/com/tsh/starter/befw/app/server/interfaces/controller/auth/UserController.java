@@ -1,32 +1,18 @@
 package com.tsh.starter.befw.app.server.interfaces.controller.auth;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.lib.core.apService.auth.UserService;
-import com.tsh.starter.befw.lib.core.apService.auth.dto.UpdateProfileRequest;
-import com.tsh.starter.befw.lib.core.apService.auth.dto.UserResponse;
-import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
-
-import lombok.RequiredArgsConstructor;
+import com.tsh.starter.befw.lib.core.interfaces.rest.auth.BaseUserController;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@RequiredArgsConstructor
-public class UserController {
+public class UserController extends BaseUserController {
 
-	private final UserService userService;
-
-	@GetMapping("/me")
-	public ApiResponse<UserResponse> getCurrentUser() {
-		return ApiResponse.ok(userService.getCurrentUserProfile());
+	public UserController(UserService userService) {
+		super(userService);
 	}
 
-	@PutMapping("/me")
-	public ApiResponse<UserResponse> updateProfile(@RequestBody UpdateProfileRequest request) {
-		return ApiResponse.ok(userService.updateProfile(request));
-	}
+	// 서비스 특화 로직이 필요한 경우 아래 hook 메서드를 오버라이드 하세요.
 }
