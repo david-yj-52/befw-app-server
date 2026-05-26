@@ -31,4 +31,8 @@ public class SnCiraBoardColumnAccess extends AbstractCrudService<SnCiraBoardColu
 		return repo.findByBoardIdAndStatusId(boardId, statusId);
 	}
 
+	public List<SnCiraBoardColumnModel> findByBoardIdOrderBySortOrd(String boardId) {
+		return repo.findByBoardIdOrderBySortOrd(boardId);
+	}
+
 }

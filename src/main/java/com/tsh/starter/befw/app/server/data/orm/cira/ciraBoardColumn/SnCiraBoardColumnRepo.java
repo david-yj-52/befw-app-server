@@ -13,4 +13,6 @@ public interface SnCiraBoardColumnRepo extends BaseJpaRepository<SnCiraBoardColu
     List<SnCiraBoardColumnModel> findByStatusId(String statusId);
 
     Optional<SnCiraBoardColumnModel> findByBoardIdAndStatusId(String boardId, String statusId);
+
+    List<SnCiraBoardColumnModel> findByBoardIdOrderBySortOrd(String boardId);
 }

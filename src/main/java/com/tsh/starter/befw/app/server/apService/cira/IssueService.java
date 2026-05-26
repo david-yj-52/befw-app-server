@@ -20,6 +20,10 @@ import com.tsh.starter.befw.app.server.apService.cira.dto.IssueStatusResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateIssueRequest;
 import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
 import com.tsh.starter.befw.app.server.apService.cira.exception.ErrorCode;
+import java.util.Set;
+
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoard.SnCiraBoardAccess;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoard.SnCiraBoardModel;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoardColumn.SnCiraBoardColumnAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoardColumn.SnCiraBoardColumnModel;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraCiraIssueType.SnCiraCiraIssueTypeAccess;
@@ -60,6 +64,7 @@ public class IssueService {
 	private final SnCiraProjectMemberAccess projectMemberAccess;
 	private final WorkflowService workflowService;
 	private final SnCiraBoardColumnAccess boardColumnAccess;
+	private final SnCiraBoardAccess boardAccess;
 
 	@Transactional
 	public IssueResponse createIssue(String projectId, CreateIssueRequest request) {
@@ -106,19 +111,27 @@ public class IssueService {
 		// Record Log
 		recordLog(issue.getObjId(), "Issue", null, "Created", reporter.getObjId());
 
-		// Initial Position (Simple Rank)
-		SnCiraIssuePositionModel position = SnCiraIssuePositionModel.builder()
-			.issueId(issue.getObjId())
-			.columnId("DEFAULT_COL") // TODO: Find actual column
-			.rankStr("0|i00000:") // Very simple Lexorank placeholder
-			.srvId(ApplicationProperties.getApplicationServiceName())
-			.tenant(ApplicationProperties.getApplicationTenant())
-			.traceId("CREATE-ISSUE")
-			.useStatCd(UseStatCd.Usable)
-			.evtNm("SetInitialPosition")
-			.prevEvntNm("None")
-			.build();
-		issuePositionAccess.save(position);
+		// Initial Position: 이슈 상태와 매핑된 컬럼을 찾아 초기 위치 설정
+		String columnId = resolveColumnId(projectId, issue.getStatusId());
+		if (columnId != null) {
+			List<SnCiraIssuePositionModel> existing = issuePositionAccess.findByColumnIdOrderByRankStr(columnId);
+			String rankStr = existing.isEmpty()
+				? LexoRankUtil.initial()
+				: LexoRankUtil.after(existing.get(existing.size() - 1).getRankStr());
+
+			SnCiraIssuePositionModel position = SnCiraIssuePositionModel.builder()
+				.issueId(issue.getObjId())
+				.columnId(columnId)
+				.rankStr(rankStr)
+				.srvId(ApplicationProperties.getApplicationServiceName())
+				.tenant(ApplicationProperties.getApplicationTenant())
+				.traceId("CREATE-ISSUE")
+				.useStatCd(UseStatCd.Usable)
+				.evtNm("SetInitialPosition")
+				.prevEvntNm("None")
+				.build();
+			issuePositionAccess.save(position);
+		}
 
 		return mapToResponse(issue);
 	}
@@ -278,6 +291,18 @@ public class IssueService {
 		};
 
 		return issueAccess.findAll(spec, pageable).map(this::mapToResponse);
+	}
+
+	private String resolveColumnId(String projectId, String statusId) {
+		if (statusId == null) return null;
+		Set<String> boardIds = boardAccess.findByProjectId(projectId).stream()
+			.map(SnCiraBoardModel::getObjId)
+			.collect(Collectors.toSet());
+		return boardColumnAccess.findByStatusId(statusId).stream()
+			.filter(c -> boardIds.contains(c.getBoardId()))
+			.map(SnCiraBoardColumnModel::getObjId)
+			.findFirst()
+			.orElse(null);
 	}
 
 	private void recordLog(String issueId, String field, String oldVal, String newVal, String changerId) {

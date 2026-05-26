@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraComment;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +22,11 @@ public class SnCiraCommentAccess extends AbstractCrudService<SnCiraCommentModel,
 		return repo;
 	}
 
+	public List<SnCiraCommentModel> findByIssueId(String issueId) {
+		return repo.findByIssueIdOrderByCreatedAtAsc(issueId);
+	}
+
+	public List<SnCiraCommentModel> findByParentId(String parentId) {
+		return repo.findByParentIdOrderByCreatedAtAsc(parentId);
+	}
 }
