@@ -45,6 +45,13 @@
 
   ---
 
+## 데이터 처리 개발론
+
+- apService 죽 biz 로직을 처리하는 Service에서는 data의 Access Service Layer를 통해서만 데이터 작업을 한다.
+- apService에서 JPA Repository를 통해 직접적으로 데이터를 조회하면 안된다.
+
+---
+
 ## 메시지 처리 아키텍처
 
 ```mermaid

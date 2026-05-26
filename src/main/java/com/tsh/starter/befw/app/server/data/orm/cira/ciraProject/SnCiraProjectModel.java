@@ -45,4 +45,10 @@ public class SnCiraProjectModel extends BaseModel {
 	@Column(name = "OWNER_ID", length = 100)
 	private String ownerId;
 
+	@Column(name = "ISSUE_SEQUENCE", nullable = false)
+	private Integer issueSequence;
+
+	@Column(name = "DELETED_AT")
+	private java.time.LocalDateTime deletedAt;
+
 }

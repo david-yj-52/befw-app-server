@@ -72,4 +72,7 @@ public class SnCiraIssueModel extends BaseModel {
 	@Column(name = "RESOLVED_AT")
 	private java.time.LocalDateTime resolvedAt;
 
+	@Column(name = "DELETED_AT")
+	private java.time.LocalDateTime deletedAt;
+
 }

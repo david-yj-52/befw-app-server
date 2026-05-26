@@ -1,5 +1,9 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,10 @@ public class SnCiraIssueAccess extends AbstractCrudService<SnCiraIssueModel, Str
 	@Override
 	protected BaseJpaRepository<SnCiraIssueModel, String> getRepository() {
 		return repo;
+	}
+
+	public Page<SnCiraIssueModel> findAll(Specification<SnCiraIssueModel> spec, Pageable pageable) {
+		return repo.findAll(spec, pageable);
 	}
 
 }

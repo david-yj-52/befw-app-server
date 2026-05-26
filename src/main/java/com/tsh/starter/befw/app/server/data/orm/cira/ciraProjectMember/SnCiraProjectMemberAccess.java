@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraProjectMember;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,10 @@ public class SnCiraProjectMemberAccess extends AbstractCrudService<SnCiraProject
 	@Override
 	protected BaseJpaRepository<SnCiraProjectMemberModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraProjectMemberModel> findAllByUserId(String userId) {
+		return repo.findAllByUserId(userId);
 	}
 
 }
