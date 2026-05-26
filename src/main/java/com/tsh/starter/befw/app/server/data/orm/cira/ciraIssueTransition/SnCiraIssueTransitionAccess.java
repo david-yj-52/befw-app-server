@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssueTransition;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,14 @@ public class SnCiraIssueTransitionAccess extends AbstractCrudService<SnCiraIssue
 	@Override
 	protected BaseJpaRepository<SnCiraIssueTransitionModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraIssueTransitionModel> findByProjectId(String projectId) {
+		return repo.findByProjectId(projectId);
+	}
+
+	public List<SnCiraIssueTransitionModel> findByProjectIdAndFromStatusId(String projectId, String fromStatusId) {
+		return repo.findByProjectIdAndFromStatusId(projectId, fromStatusId);
 	}
 
 }

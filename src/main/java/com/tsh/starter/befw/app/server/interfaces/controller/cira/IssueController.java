@@ -11,12 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import com.tsh.starter.befw.app.server.apService.cira.IssueService;
+import com.tsh.starter.befw.app.server.apService.cira.dto.ChangeStatusRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateIssueRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueFilterRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
+import com.tsh.starter.befw.app.server.apService.cira.dto.IssueStatusResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateIssueRequest;
 import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,5 +67,18 @@ public class IssueController {
 	public ApiResponse<Void> deleteIssue(@PathVariable String issueId) {
 		issueService.deleteIssue(issueId);
 		return ApiResponse.noContent();
+	}
+
+	@PutMapping("/issues/{issueId}/status")
+	public ApiResponse<IssueResponse> changeStatus(
+		@PathVariable String issueId,
+		@Valid @RequestBody ChangeStatusRequest request
+	) {
+		return ApiResponse.ok(issueService.changeStatus(issueId, request));
+	}
+
+	@GetMapping("/issues/{issueId}/available-transitions")
+	public ApiResponse<List<IssueStatusResponse>> getAvailableTransitions(@PathVariable String issueId) {
+		return ApiResponse.ok(issueService.getAvailableTransitions(issueId));
 	}
 }

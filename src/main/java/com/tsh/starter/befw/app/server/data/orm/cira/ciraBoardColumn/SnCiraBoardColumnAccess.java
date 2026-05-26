@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraBoardColumn;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,14 @@ public class SnCiraBoardColumnAccess extends AbstractCrudService<SnCiraBoardColu
 	@Override
 	protected BaseJpaRepository<SnCiraBoardColumnModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraBoardColumnModel> findByStatusId(String statusId) {
+		return repo.findByStatusId(statusId);
+	}
+
+	public Optional<SnCiraBoardColumnModel> findByBoardIdAndStatusId(String boardId, String statusId) {
+		return repo.findByBoardIdAndStatusId(boardId, statusId);
 	}
 
 }

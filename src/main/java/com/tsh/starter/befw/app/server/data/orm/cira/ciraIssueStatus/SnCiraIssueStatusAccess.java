@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssueStatus;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,14 @@ public class SnCiraIssueStatusAccess extends AbstractCrudService<SnCiraIssueStat
 	@Override
 	protected BaseJpaRepository<SnCiraIssueStatusModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraIssueStatusModel> findByProjectId(String projectId) {
+		return repo.findByProjectIdOrderBySortOrd(projectId);
+	}
+
+	public Optional<SnCiraIssueStatusModel> findByProjectIdAndStatusNm(String projectId, String statusNm) {
+		return repo.findByProjectIdAndStatusNm(projectId, statusNm);
 	}
 
 }

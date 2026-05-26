@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
 import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(CiraException.class)
+	public ResponseEntity<ApiResponse<Void>> handleCiraException(CiraException e) {
+		log.warn("Cira domain error [{}]: {}", e.getErrorCode().getCode(), e.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(ApiResponse.error(e.getErrorCode().getCode(), e.getMessage()));
+	}
 
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException e) {

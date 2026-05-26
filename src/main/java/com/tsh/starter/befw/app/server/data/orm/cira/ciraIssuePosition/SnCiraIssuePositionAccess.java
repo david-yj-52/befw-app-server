@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssuePosition;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,10 @@ public class SnCiraIssuePositionAccess extends AbstractCrudService<SnCiraIssuePo
 	@Override
 	protected BaseJpaRepository<SnCiraIssuePositionModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraIssuePositionModel> findByIssueId(String issueId) {
+		return repo.findByIssueId(issueId);
 	}
 
 }

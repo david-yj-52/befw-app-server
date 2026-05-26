@@ -12,10 +12,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsh.starter.befw.app.server.apService.cira.dto.ChangeStatusRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateIssueRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueFilterRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
+import com.tsh.starter.befw.app.server.apService.cira.dto.IssueStatusResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateIssueRequest;
+import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
+import com.tsh.starter.befw.app.server.apService.cira.exception.ErrorCode;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoardColumn.SnCiraBoardColumnAccess;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraBoardColumn.SnCiraBoardColumnModel;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraCiraIssueType.SnCiraCiraIssueTypeAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraCiraIssueType.SnCiraCiraIssueTypeModel;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue.SnCiraIssueAccess;
@@ -52,6 +58,8 @@ public class IssueService {
 	private final SnCiraIssueLogAccess issueLogAccess;
 	private final SnCiraIssuePositionAccess issuePositionAccess;
 	private final SnCiraProjectMemberAccess projectMemberAccess;
+	private final WorkflowService workflowService;
+	private final SnCiraBoardColumnAccess boardColumnAccess;
 
 	@Transactional
 	public IssueResponse createIssue(String projectId, CreateIssueRequest request) {
@@ -174,6 +182,71 @@ public class IssueService {
 
 		issue.setDeletedAt(LocalDateTime.now());
 		issueAccess.save(issue);
+	}
+
+	@Transactional
+	public IssueResponse changeStatus(String issueId, ChangeStatusRequest request) {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		GsUserModel user = userAccess.findByEmail(email)
+			.orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
+
+		SnCiraIssueModel issue = issueAccess.findById(issueId);
+
+		if (issue.getDeletedAt() != null) {
+			throw new CiraException(ErrorCode.ISSUE_NOT_FOUND, "이슈를 찾을 수 없습니다: " + issueId);
+		}
+
+		projectMemberAccess.findAllByUserId(user.getObjId()).stream()
+			.filter(m -> m.getProjectId().equals(issue.getProjectId()))
+			.findFirst()
+			.orElseThrow(() -> new CiraException(ErrorCode.PROJECT_NOT_MEMBER));
+
+		String fromStatusId = issue.getStatusId();
+		String toStatusId = request.getStatusId();
+
+		SnCiraIssueStatusModel fromStatus = statusAccess.findByIdOptional(fromStatusId).orElse(null);
+		SnCiraIssueStatusModel toStatus = statusAccess.findByIdOptional(toStatusId)
+			.orElseThrow(() -> new CiraException(ErrorCode.ISSUE_STATUS_NOT_FOUND, "존재하지 않는 상태 ID: " + toStatusId));
+
+		workflowService.validateTransition(issue.getProjectId(), fromStatusId, toStatusId);
+
+		issue.setStatusId(toStatusId);
+		issueAccess.save(issue);
+
+		recordLog(issueId, "status",
+			fromStatus != null ? fromStatus.getStatusNm() : fromStatusId,
+			toStatus.getStatusNm(),
+			user.getObjId());
+
+		updateIssuePosition(issueId, toStatusId);
+
+		return mapToResponse(issue);
+	}
+
+	public List<IssueStatusResponse> getAvailableTransitions(String issueId) {
+		SnCiraIssueModel issue = issueAccess.findById(issueId);
+
+		if (issue.getDeletedAt() != null) {
+			throw new CiraException(ErrorCode.ISSUE_NOT_FOUND, "이슈를 찾을 수 없습니다: " + issueId);
+		}
+
+		return workflowService.getAvailableTransitions(issue.getProjectId(), issue.getStatusId());
+	}
+
+	private void updateIssuePosition(String issueId, String newStatusId) {
+		List<SnCiraIssuePositionModel> positions = issuePositionAccess.findByIssueId(issueId);
+
+		for (SnCiraIssuePositionModel position : positions) {
+			SnCiraBoardColumnModel currentColumn = boardColumnAccess.findByIdOptional(position.getColumnId()).orElse(null);
+			if (currentColumn == null) {
+				continue;
+			}
+			boardColumnAccess.findByBoardIdAndStatusId(currentColumn.getBoardId(), newStatusId)
+				.ifPresent(newColumn -> {
+					position.setColumnId(newColumn.getObjId());
+					issuePositionAccess.save(position);
+				});
+		}
 	}
 
 	public Page<IssueResponse> listIssues(String projectId, IssueFilterRequest filter, Pageable pageable) {
