@@ -18,7 +18,8 @@ public enum ErrorCode {
     SPRINT_NOT_FOUND("CIRA_009", "존재하지 않는 스프린트입니다."),
     SPRINT_INVALID_TRANSITION("CIRA_010", "허용되지 않은 스프린트 상태 전이입니다."),
     SPRINT_ALREADY_ACTIVE("CIRA_011", "이미 활성화된 스프린트가 존재합니다."),
-    BOARD_WIP_LIMIT_EXCEEDED("CIRA_012", "보드 컬럼의 WIP 제한을 초과하였습니다.");
+    BOARD_WIP_LIMIT_EXCEEDED("CIRA_012", "보드 컬럼의 WIP 제한을 초과하였습니다."),
+    SPRINT_NEXT_SPRINT_REQUIRED("CIRA_013", "NEXT_SPRINT 선택 시 nextSprintId는 필수입니다.");
 
     private final String code;
     private final String defaultMessage;

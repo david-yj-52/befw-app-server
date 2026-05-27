@@ -2,6 +2,7 @@ package com.tsh.starter.befw.app.server.apService.cira;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsh.starter.befw.app.server.apService.cira.dto.CompleteSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.SprintResponse;
@@ -18,6 +20,7 @@ import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
 import com.tsh.starter.befw.app.server.apService.cira.exception.ErrorCode;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue.SnCiraIssueAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue.SnCiraIssueModel;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssueStatus.SnCiraIssueStatusAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraProject.SnCiraProjectAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraProjectMember.SnCiraProjectMemberAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraSprint.SnCiraSprintAccess;
@@ -42,6 +45,7 @@ public class SprintService {
 	private final SnCiraProjectAccess projectAccess;
 	private final SnCiraProjectMemberAccess projectMemberAccess;
 	private final SnCiraIssueAccess issueAccess;
+	private final SnCiraIssueStatusAccess issueStatusAccess;
 	private final GsUserAccess userAccess;
 	private final IssueService issueService;
 
@@ -162,7 +166,7 @@ public class SprintService {
 	}
 
 	@Transactional
-	public SprintResponse completeSprint(String sprintId) {
+	public SprintResponse completeSprint(String sprintId, CompleteSprintRequest request) {
 		String email = currentEmail();
 		GsUserModel user = findUser(email);
 
@@ -174,8 +178,31 @@ public class SprintService {
 				"Active 상태인 스프린트만 완료할 수 있습니다. 현재 상태: " + sprint.getSprintStat());
 		}
 
-		// 완료되지 않은 이슈를 백로그로 이동
-		unassignAllIssues(sprintId);
+		boolean isNextSprint = "NEXT_SPRINT".equals(request.getIncompleteIssueAction());
+		if (isNextSprint && request.getNextSprintId() == null) {
+			throw new CiraException(ErrorCode.SPRINT_NEXT_SPRINT_REQUIRED);
+		}
+
+		Set<String> doneStatusIds = issueStatusAccess.findByProjectId(sprint.getProjectId()).stream()
+			.filter(s -> "DONE".equals(s.getCategory()))
+			.map(s -> s.getObjId())
+			.collect(Collectors.toSet());
+
+		issueAccess.findBySprintId(sprintId).forEach(issue -> {
+			if (doneStatusIds.contains(issue.getStatusId())) {
+				return; // Done 이슈는 현재 스프린트 유지
+			}
+			String prevEvt = issue.getEvtNm() != null ? issue.getEvtNm() : "None";
+			if (isNextSprint) {
+				issue.setSprintId(request.getNextSprintId());
+				issue.setEvtNm("MoveToNextSprint");
+			} else {
+				issue.setSprintId(null);
+				issue.setEvtNm("UnassignFromSprint");
+			}
+			issue.setPrevEvntNm(prevEvt);
+			issueAccess.save(issue);
+		});
 
 		sprint.setSprintStat(STAT_COMPLETED);
 		sprint.setEvtNm("CompleteSprint");

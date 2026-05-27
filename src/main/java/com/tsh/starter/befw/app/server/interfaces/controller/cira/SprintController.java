@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.app.server.apService.cira.SprintService;
+import com.tsh.starter.befw.app.server.apService.cira.dto.CompleteSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.SprintResponse;
@@ -86,8 +87,11 @@ public class SprintController {
 	}
 
 	@PostMapping("/api/v1/sprints/{sprintId}/complete")
-	public ApiResponse<SprintResponse> completeSprint(@PathVariable String sprintId) {
-		return ApiResponse.ok(sprintService.completeSprint(sprintId));
+	public ApiResponse<SprintResponse> completeSprint(
+		@PathVariable String sprintId,
+		@RequestBody CompleteSprintRequest request
+	) {
+		return ApiResponse.ok(sprintService.completeSprint(sprintId, request));
 	}
 
 	@PostMapping("/api/v1/sprints/{sprintId}/issues/{issueId}")
