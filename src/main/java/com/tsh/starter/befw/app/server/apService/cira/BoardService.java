@@ -186,6 +186,19 @@ public class BoardService {
 			throw new CiraException(ErrorCode.BOARD_COLUMN_NOT_FOUND, "컬럼이 해당 보드에 속하지 않습니다.");
 		}
 
+		// WIP 제한 검증
+		Short wipLimit = targetColumn.getWipLimit();
+		if (wipLimit != null && wipLimit > 0) {
+			long currentCount = issuePositionAccess.findByColumnIdOrderByRankStr(request.getTargetColumnId()).stream()
+				.filter(p -> p.getUseStatCd() == UseStatCd.Usable)
+				.filter(p -> !p.getIssueId().equals(issueId))
+				.count();
+			if (currentCount >= wipLimit) {
+				throw new CiraException(ErrorCode.BOARD_WIP_LIMIT_EXCEEDED,
+					"WIP 제한(" + wipLimit + ")을 초과하였습니다. 현재 이슈 수: " + currentCount);
+			}
+		}
+
 		Set<String> boardColumnIds = boardColumnAccess.findByBoardIdOrderBySortOrd(boardId).stream()
 			.map(SnCiraBoardColumnModel::getObjId)
 			.collect(Collectors.toSet());

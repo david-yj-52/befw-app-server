@@ -21,6 +21,7 @@ public class CommentResponse {
 	private String content;
 	private UserResponse author;
 	private List<CommentResponse> replies;
+	private List<CommentReactionResponse> reactions;
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 }

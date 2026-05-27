@@ -1,13 +1,17 @@
 package com.tsh.starter.befw.app.server.apService.cira;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
+import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.SprintResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
@@ -39,6 +43,7 @@ public class SprintService {
 	private final SnCiraProjectMemberAccess projectMemberAccess;
 	private final SnCiraIssueAccess issueAccess;
 	private final GsUserAccess userAccess;
+	private final IssueService issueService;
 
 	@Transactional
 	public SprintResponse createSprint(String projectId, CreateSprintRequest request) {
@@ -73,6 +78,19 @@ public class SprintService {
 			.filter(s -> UseStatCd.Usable.equals(s.getUseStatCd()))
 			.map(this::mapToResponse)
 			.collect(Collectors.toList());
+	}
+
+	public Optional<SprintResponse> getActiveSprint(String projectId) {
+		projectAccess.findById(projectId);
+		return sprintAccess.findByProjectIdAndSprintStat(projectId, STAT_ACTIVE).stream()
+			.filter(s -> UseStatCd.Usable.equals(s.getUseStatCd()))
+			.findFirst()
+			.map(this::mapToResponse);
+	}
+
+	public Page<IssueResponse> getBacklog(String projectId, Pageable pageable) {
+		projectAccess.findById(projectId);
+		return issueService.getBacklog(projectId, pageable);
 	}
 
 	public SprintResponse getSprint(String sprintId) {

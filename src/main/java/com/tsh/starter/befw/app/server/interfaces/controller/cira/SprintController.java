@@ -2,6 +2,10 @@ package com.tsh.starter.befw.app.server.interfaces.controller.cira;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.app.server.apService.cira.SprintService;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
+import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.SprintResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateSprintRequest;
 import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
@@ -36,6 +42,23 @@ public class SprintController {
 	@GetMapping("/api/v1/projects/{projectId}/sprints")
 	public ApiResponse<List<SprintResponse>> getSprints(@PathVariable String projectId) {
 		return ApiResponse.ok(sprintService.getSprints(projectId));
+	}
+
+	@GetMapping("/api/v1/projects/{projectId}/sprints/active")
+	public ResponseEntity<ApiResponse<SprintResponse>> getActiveSprint(@PathVariable String projectId) {
+		return sprintService.getActiveSprint(projectId)
+			.map(s -> ResponseEntity.ok(ApiResponse.ok(s)))
+			.orElseGet(() -> ResponseEntity.noContent().<ApiResponse<SprintResponse>>build());
+	}
+
+	@GetMapping("/api/v1/projects/{projectId}/backlog")
+	public ApiResponse<Page<IssueResponse>> getBacklog(
+		@PathVariable String projectId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size
+	) {
+		return ApiResponse.ok(sprintService.getBacklog(projectId,
+			PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "priority"))));
 	}
 
 	@GetMapping("/api/v1/sprints/{sprintId}")

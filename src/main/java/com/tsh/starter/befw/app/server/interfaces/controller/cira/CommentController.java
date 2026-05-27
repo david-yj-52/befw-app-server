@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsh.starter.befw.app.server.apService.cira.CommentService;
+import com.tsh.starter.befw.app.server.apService.cira.dto.AddReactionRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CommentResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateCommentRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateCommentRequest;
@@ -52,5 +53,13 @@ public class CommentController {
 	public ApiResponse<Void> deleteComment(@PathVariable String commentId) {
 		commentService.deleteComment(commentId);
 		return ApiResponse.noContent();
+	}
+
+	@PostMapping("/comments/{commentId}/reactions")
+	public ApiResponse<CommentResponse> toggleReaction(
+		@PathVariable String commentId,
+		@Valid @RequestBody AddReactionRequest request
+	) {
+		return ApiResponse.ok(commentService.toggleReaction(commentId, request));
 	}
 }

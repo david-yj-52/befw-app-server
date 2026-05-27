@@ -262,6 +262,15 @@ public class IssueService {
 		}
 	}
 
+	public Page<IssueResponse> getBacklog(String projectId, Pageable pageable) {
+		Specification<SnCiraIssueModel> spec = (root, query, cb) -> cb.and(
+			cb.equal(root.get("projectId"), projectId),
+			cb.isNull(root.get("deletedAt")),
+			cb.isNull(root.get("sprintId"))
+		);
+		return issueAccess.findAll(spec, pageable).map(this::mapToResponse);
+	}
+
 	public Page<IssueResponse> listIssues(String projectId, IssueFilterRequest filter, Pageable pageable) {
 		Specification<SnCiraIssueModel> spec = (root, query, cb) -> {
 			List<Predicate> predicates = new ArrayList<>();

@@ -1,12 +1,16 @@
 package com.tsh.starter.befw.app.server.apService.cira;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsh.starter.befw.app.server.apService.cira.dto.AddReactionRequest;
+import com.tsh.starter.befw.app.server.apService.cira.dto.CommentReactionResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CommentResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateCommentRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.UpdateCommentRequest;
@@ -14,6 +18,8 @@ import com.tsh.starter.befw.app.server.apService.cira.exception.CiraException;
 import com.tsh.starter.befw.app.server.apService.cira.exception.ErrorCode;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraComment.SnCiraCommentAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraComment.SnCiraCommentModel;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraCommentReaction.SnCiraCommentReactionAccess;
+import com.tsh.starter.befw.app.server.data.orm.cira.ciraCommentReaction.SnCiraCommentReactionModel;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue.SnCiraIssueAccess;
 import com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue.SnCiraIssueModel;
 import com.tsh.starter.befw.lib.core.apService.auth.dto.UserResponse;
@@ -32,6 +38,7 @@ public class CommentService {
 	private final SnCiraCommentAccess commentAccess;
 	private final SnCiraIssueAccess issueAccess;
 	private final GsUserAccess userAccess;
+	private final SnCiraCommentReactionAccess commentReactionAccess;
 
 	@Transactional
 	public CommentResponse createComment(String issueId, CreateCommentRequest request) {
@@ -64,7 +71,7 @@ public class CommentService {
 			.build();
 
 		commentAccess.save(comment);
-		return mapToResponse(comment, false);
+		return mapToResponse(comment, false, author.getObjId());
 	}
 
 	public List<CommentResponse> getComments(String issueId) {
@@ -73,16 +80,16 @@ public class CommentService {
 			throw new CiraException(ErrorCode.ISSUE_NOT_FOUND, "이슈를 찾을 수 없습니다: " + issueId);
 		}
 
+		String currentUserId = resolveCurrentUserId();
 		List<SnCiraCommentModel> all = commentAccess.findByIssueId(issueId);
 
-		// parentId가 null인 루트 댓글만 추출 후 대댓글을 함께 조합
 		return all.stream()
 			.filter(c -> c.getParentId() == null && UseStatCd.Usable.equals(c.getUseStatCd()))
 			.map(root -> {
-				CommentResponse response = mapToResponse(root, false);
+				CommentResponse response = mapToResponse(root, false, currentUserId);
 				List<CommentResponse> replies = all.stream()
 					.filter(c -> root.getObjId().equals(c.getParentId()) && UseStatCd.Usable.equals(c.getUseStatCd()))
-					.map(reply -> mapToResponse(reply, true))
+					.map(reply -> mapToResponse(reply, true, currentUserId))
 					.collect(Collectors.toList());
 				response.setReplies(replies);
 				return response;
@@ -110,7 +117,7 @@ public class CommentService {
 		comment.setPrevEvntNm("CreateComment");
 		commentAccess.save(comment);
 
-		return mapToResponse(comment, comment.getParentId() != null);
+		return mapToResponse(comment, comment.getParentId() != null, user.getObjId());
 	}
 
 	@Transactional
@@ -134,8 +141,64 @@ public class CommentService {
 		commentAccess.save(comment);
 	}
 
-	private CommentResponse mapToResponse(SnCiraCommentModel model, boolean suppressReplies) {
+	@Transactional
+	public CommentResponse toggleReaction(String commentId, AddReactionRequest request) {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		GsUserModel user = userAccess.findByEmail(email)
+			.orElseThrow(() -> new EntityNotFoundException("User not found: " + email));
+
+		SnCiraCommentModel comment = commentAccess.findById(commentId);
+		if (!UseStatCd.Usable.equals(comment.getUseStatCd())) {
+			throw new CiraException(ErrorCode.COMMENT_NOT_FOUND, "댓글을 찾을 수 없습니다: " + commentId);
+		}
+
+		Optional<SnCiraCommentReactionModel> existing = commentReactionAccess
+			.findByCommentIdAndUserIdAndReactionType(commentId, user.getObjId(), request.getReactionType());
+
+		if (existing.isPresent()) {
+			SnCiraCommentReactionModel reaction = existing.get();
+			if (UseStatCd.Usable.equals(reaction.getUseStatCd())) {
+				reaction.setUseStatCd(UseStatCd.Delete);
+				reaction.setEvtNm("RemoveReaction");
+				reaction.setPrevEvntNm("AddReaction");
+			} else {
+				reaction.setUseStatCd(UseStatCd.Usable);
+				reaction.setEvtNm("AddReaction");
+				reaction.setPrevEvntNm("RemoveReaction");
+			}
+			commentReactionAccess.save(reaction);
+		} else {
+			SnCiraCommentReactionModel reaction = SnCiraCommentReactionModel.builder()
+				.commentId(commentId)
+				.userId(user.getObjId())
+				.reactionType(request.getReactionType())
+				.srvId(ApplicationProperties.getApplicationServiceName())
+				.tenant(ApplicationProperties.getApplicationTenant())
+				.traceId("ADD-REACTION")
+				.useStatCd(UseStatCd.Usable)
+				.evtNm("AddReaction")
+				.prevEvntNm("None")
+				.build();
+			commentReactionAccess.save(reaction);
+		}
+
+		return mapToResponse(comment, comment.getParentId() != null, user.getObjId());
+	}
+
+	private String resolveCurrentUserId() {
+		try {
+			String email = SecurityContextHolder.getContext().getAuthentication().getName();
+			return userAccess.findByEmail(email).map(GsUserModel::getObjId).orElse(null);
+		} catch (Exception ignored) {
+			return null;
+		}
+	}
+
+	private CommentResponse mapToResponse(SnCiraCommentModel model, boolean suppressReplies, String currentUserId) {
 		GsUserModel author = userAccess.findByIdOptional(model.getAuthorId()).orElse(null);
+
+		List<SnCiraCommentReactionModel> rawReactions = commentReactionAccess.findByCommentId(model.getObjId());
+		List<CommentReactionResponse> reactions = buildReactionSummary(rawReactions, currentUserId);
 
 		return CommentResponse.builder()
 			.id(model.getObjId())
@@ -150,8 +213,25 @@ public class CommentService {
 					.build()
 				: null)
 			.replies(suppressReplies ? null : List.of())
+			.reactions(reactions)
 			.createdAt(model.getCreatedAt())
 			.modifiedAt(model.getModifiedAt())
 			.build();
+	}
+
+	private List<CommentReactionResponse> buildReactionSummary(
+			List<SnCiraCommentReactionModel> reactions, String currentUserId) {
+		Map<String, List<SnCiraCommentReactionModel>> grouped = reactions.stream()
+			.filter(r -> UseStatCd.Usable.equals(r.getUseStatCd()))
+			.collect(Collectors.groupingBy(SnCiraCommentReactionModel::getReactionType));
+
+		return grouped.entrySet().stream()
+			.map(e -> CommentReactionResponse.builder()
+				.reactionType(e.getKey())
+				.count(e.getValue().size())
+				.reacted(currentUserId != null && e.getValue().stream()
+					.anyMatch(r -> r.getUserId().equals(currentUserId)))
+				.build())
+			.collect(Collectors.toList());
 	}
 }
