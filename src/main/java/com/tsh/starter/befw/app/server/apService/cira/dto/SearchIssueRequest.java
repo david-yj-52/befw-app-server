@@ -1,5 +1,6 @@
 package com.tsh.starter.befw.app.server.apService.cira.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,5 +19,7 @@ public class SearchIssueRequest {
 	private String sprintId;
 	private LocalDateTime createdAfter;
 	private LocalDateTime createdBefore;
+	private LocalDate dueDateFrom;
+	private LocalDate dueDateTo;
 
 }

@@ -17,4 +17,7 @@ public interface SnCiraNotificationRepo extends BaseJpaRepository<SnCiraNotifica
 
 	long countByUserIdAndReadYn(String userId, String readYn);
 
+	@Query("SELECT n FROM SnCiraNotificationModel n WHERE n.userId = :userId AND n.readYn = 'N' AND n.useStatCd <> com.tsh.starter.befw.lib.core.data.constant.UseStatCd.Delete")
+	List<SnCiraNotificationModel> findAllUnreadByUserId(@Param("userId") String userId);
+
 }

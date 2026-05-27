@@ -27,6 +27,10 @@ public class SnCiraNotificationAccess extends AbstractCrudService<SnCiraNotifica
 		return repo.findTop50ByUserId(userId, PageRequest.of(0, 50));
 	}
 
+	public List<SnCiraNotificationModel> findAllUnreadByUserId(String userId) {
+		return repo.findAllUnreadByUserId(userId);
+	}
+
 	public long countUnread(String userId) {
 		return repo.countByUserIdAndReadYn(userId, "N");
 	}

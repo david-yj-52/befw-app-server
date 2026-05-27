@@ -166,6 +166,12 @@ public class SearchService {
 		if (request.getCreatedBefore() != null) {
 			whereSql.append(" AND i.CREATED_AT <= :createdBefore");
 		}
+		if (request.getDueDateFrom() != null) {
+			whereSql.append(" AND i.DUE_DT >= :dueDateFrom");
+		}
+		if (request.getDueDateTo() != null) {
+			whereSql.append(" AND i.DUE_DT <= :dueDateTo");
+		}
 
 		String selectSql = "SELECT i.* FROM SN_CIRA_ISSUE i" + whereSql
 			+ " ORDER BY ts_rank(i.SEARCH_VECTOR, plainto_tsquery('simple', :q)) DESC";
@@ -203,6 +209,8 @@ public class SearchService {
 		if (request.getSprintId() != null) query.setParameter("sprintId", request.getSprintId());
 		if (request.getCreatedAfter() != null) query.setParameter("createdAfter", request.getCreatedAfter());
 		if (request.getCreatedBefore() != null) query.setParameter("createdBefore", request.getCreatedBefore());
+		if (request.getDueDateFrom() != null) query.setParameter("dueDateFrom", request.getDueDateFrom());
+		if (request.getDueDateTo() != null) query.setParameter("dueDateTo", request.getDueDateTo());
 	}
 
 	private Page<IssueResponse> searchWithSpec(SearchIssueRequest request, Pageable pageable) {
@@ -236,6 +244,12 @@ public class SearchService {
 			}
 			if (request.getCreatedBefore() != null) {
 				predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), request.getCreatedBefore()));
+			}
+			if (request.getDueDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(root.get("dueDt"), request.getDueDateFrom()));
+			}
+			if (request.getDueDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(root.get("dueDt"), request.getDueDateTo()));
 			}
 			return cb.and(predicates.toArray(new Predicate[0]));
 		};

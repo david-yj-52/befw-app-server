@@ -82,8 +82,7 @@ public class NotificationService {
 	@Transactional
 	public void markAllRead() {
 		String userId = currentUserId();
-		notificationAccess.findRecentByUserId(userId).stream()
-			.filter(n -> "N".equals(n.getReadYn()))
+		notificationAccess.findAllUnreadByUserId(userId).stream()
 			.forEach(n -> {
 				n.setReadYn("Y");
 				n.setEvtNm("MarkAllRead");

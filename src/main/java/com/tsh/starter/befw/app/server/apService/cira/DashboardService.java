@@ -57,6 +57,7 @@ public class DashboardService {
 	private final GsUserAccess userAccess;
 	private final IssueService issueService;
 
+	@Cacheable(value = "burndown", key = "#sprintId")
 	@Transactional(readOnly = true)
 	public BurndownResponse getBurndown(String sprintId) {
 		SnCiraSprintModel sprint = sprintAccess.findById(sprintId);
@@ -129,6 +130,7 @@ public class DashboardService {
 		}).collect(Collectors.toList());
 	}
 
+	@Cacheable(value = "cfd", key = "#projectId + '-' + #startDate + '-' + #endDate")
 	@Transactional(readOnly = true)
 	public CfdResponse getCfd(String projectId, LocalDate startDate, LocalDate endDate) {
 		List<SnCiraIssueStatusModel> statuses = statusAccess.findAllByProject(projectId);
@@ -178,6 +180,7 @@ public class DashboardService {
 			.build();
 	}
 
+	@Cacheable(value = "userDashboard", key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
 	@Transactional(readOnly = true)
 	public UserDashboardResponse getUserDashboard() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
