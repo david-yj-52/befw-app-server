@@ -37,12 +37,15 @@ public class SnCiraAttachmentModel extends BaseModel {
 	private String fileNm;
 
 	@Column(name = "FILE_PATH", length = 1000, nullable = false)
-	private String filePath;
+	private String s3Key;
 
 	@Column(name = "FILE_SIZE")
 	private Long fileSize;
 
 	@Column(name = "MIME_TYPE", length = 100)
 	private String mimeType;
+
+	@Column(name = "UPLOADED_BY", length = 100)
+	private String uploadedBy;
 
 }

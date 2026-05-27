@@ -1,8 +1,11 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraAttachment;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
 import com.tsh.starter.befw.lib.core.data.orm.common.access.AbstractCrudService;
 import com.tsh.starter.befw.lib.core.data.orm.common.repo.BaseJpaRepository;
 
@@ -18,6 +21,10 @@ public class SnCiraAttachmentAccess extends AbstractCrudService<SnCiraAttachment
 	@Override
 	protected BaseJpaRepository<SnCiraAttachmentModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraAttachmentModel> findActiveByIssueId(String issueId) {
+		return repo.findByIssueIdAndUseStatCdNot(issueId, UseStatCd.Delete);
 	}
 
 }

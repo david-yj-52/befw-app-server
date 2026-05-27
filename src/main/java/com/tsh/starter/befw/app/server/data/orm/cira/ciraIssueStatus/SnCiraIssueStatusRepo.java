@@ -10,7 +10,12 @@ import com.tsh.starter.befw.lib.core.data.orm.common.repo.BaseJpaRepository;
 @Repository
 public interface SnCiraIssueStatusRepo extends BaseJpaRepository<SnCiraIssueStatusModel, String> {
 
-    List<SnCiraIssueStatusModel> findByProjectIdOrderBySortOrd(String projectId);
+	List<SnCiraIssueStatusModel> findByProjectIdOrderBySortOrd(String projectId);
 
-    Optional<SnCiraIssueStatusModel> findByProjectIdAndStatusNm(String projectId, String statusNm);
+	Optional<SnCiraIssueStatusModel> findByProjectIdAndStatusNm(String projectId, String statusNm);
+
+	List<SnCiraIssueStatusModel> findByProjectIdAndCategory(String projectId, String category);
+
+	List<SnCiraIssueStatusModel> findByCategory(String category);
+
 }

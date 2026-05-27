@@ -1,4 +1,12 @@
-﻿springdoc:
+﻿cira:
+  storage:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket: ${MINIO_BUCKET:cira-attachments}
+    region: ${MINIO_REGION:ap-northeast-2}
+
+springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
@@ -32,6 +40,12 @@ spring:
         audit_table_suffix: _HIST     # ?대젰 ?뚯씠釉붾챸 ?ㅼ뿉 _HISTORY 遺숈엫
 
 
+  cache:
+    type: ${CACHE_TYPE:simple}
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   data:
     redis:
       host: ${REDIS_HOST:localhost}

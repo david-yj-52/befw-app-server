@@ -2,6 +2,8 @@ package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssueStatus;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,18 @@ public class SnCiraIssueStatusAccess extends AbstractCrudService<SnCiraIssueStat
 
 	public Optional<SnCiraIssueStatusModel> findByProjectIdAndStatusNm(String projectId, String statusNm) {
 		return repo.findByProjectIdAndStatusNm(projectId, statusNm);
+	}
+
+	public Set<String> findDoneStatusIdsByProject(String projectId) {
+		List<SnCiraIssueStatusModel> doneStatuses = repo.findByProjectIdAndCategory(projectId, "DONE");
+		if (doneStatuses.isEmpty()) {
+			doneStatuses = repo.findByCategory("DONE");
+		}
+		return doneStatuses.stream().map(SnCiraIssueStatusModel::getObjId).collect(Collectors.toSet());
+	}
+
+	public List<SnCiraIssueStatusModel> findAllByProject(String projectId) {
+		return repo.findByProjectIdOrderBySortOrd(projectId);
 	}
 
 }

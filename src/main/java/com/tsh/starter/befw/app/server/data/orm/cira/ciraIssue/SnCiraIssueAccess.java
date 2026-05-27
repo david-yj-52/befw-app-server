@@ -1,5 +1,6 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssue;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -32,6 +33,22 @@ public class SnCiraIssueAccess extends AbstractCrudService<SnCiraIssueModel, Str
 
 	public List<SnCiraIssueModel> findBySprintId(String sprintId) {
 		return repo.findBySprintIdAndDeletedAtIsNull(sprintId);
+	}
+
+	public List<SnCiraIssueModel> findByProjectId(String projectId) {
+		return repo.findByProjectIdAndDeletedAtIsNull(projectId);
+	}
+
+	public List<SnCiraIssueModel> findByAssigneeId(String assigneeId) {
+		return repo.findByAssigneeIdAndDeletedAtIsNull(assigneeId);
+	}
+
+	public List<SnCiraIssueModel> findUpcomingDeadlines(String userId, LocalDate deadline) {
+		return repo.findUpcomingDeadlines(userId, deadline);
+	}
+
+	public List<SnCiraIssueModel> findBySprintIds(List<String> sprintIds) {
+		return repo.findBySprintIds(sprintIds);
 	}
 
 }
