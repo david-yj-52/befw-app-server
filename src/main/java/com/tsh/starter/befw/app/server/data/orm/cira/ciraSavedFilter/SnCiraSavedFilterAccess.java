@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraSavedFilter;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,10 @@ public class SnCiraSavedFilterAccess extends AbstractCrudService<SnCiraSavedFilt
 	@Override
 	protected BaseJpaRepository<SnCiraSavedFilterModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraSavedFilterModel> findByUserId(String userId) {
+		return repo.findByUserId(userId);
 	}
 
 }

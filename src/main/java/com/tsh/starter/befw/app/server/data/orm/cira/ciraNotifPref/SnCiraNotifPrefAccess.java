@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraNotifPref;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,15 @@ public class SnCiraNotifPrefAccess extends AbstractCrudService<SnCiraNotifPrefMo
 	@Override
 	protected BaseJpaRepository<SnCiraNotifPrefModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraNotifPrefModel> findByUserId(String userId) {
+		return repo.findByUserId(userId);
+	}
+
+	public Optional<SnCiraNotifPrefModel> findByUserIdAndChannelAndEventType(
+			String userId, String channel, String eventType) {
+		return repo.findByUserIdAndChannelAndEventType(userId, channel, eventType);
 	}
 
 }

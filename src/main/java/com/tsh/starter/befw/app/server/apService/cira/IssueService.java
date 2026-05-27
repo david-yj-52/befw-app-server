@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tsh.starter.befw.app.server.apService.cira.dto.ChangeStatusRequest;
+import com.tsh.starter.befw.app.server.apService.cira.NotificationService;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateIssueRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueFilterRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
@@ -65,6 +66,7 @@ public class IssueService {
 	private final WorkflowService workflowService;
 	private final SnCiraBoardColumnAccess boardColumnAccess;
 	private final SnCiraBoardAccess boardAccess;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public IssueResponse createIssue(String projectId, CreateIssueRequest request) {
@@ -169,7 +171,20 @@ public class IssueService {
 			recordLog(issueId, "CONTENT", issue.getContent(), request.getContent(), user.getObjId());
 			issue.setContent(request.getContent());
 		}
-		// ... repeat for other fields
+
+		// assignee 변경 알림
+		String prevAssigneeId = issue.getAssigneeId();
+		if (request.getAssigneeId() != null && !request.getAssigneeId().equals(prevAssigneeId)) {
+			recordLog(issueId, "ASSIGNEE_ID", prevAssigneeId, request.getAssigneeId(), user.getObjId());
+			issue.setAssigneeId(request.getAssigneeId());
+			notificationService.send(
+				request.getAssigneeId(),
+				"ISSUE_ASSIGNED",
+				"이슈가 배정되었습니다",
+				"[" + issue.getIssueKey() + "] " + issue.getTitle(),
+				"ISSUE", issue.getObjId()
+			);
+		}
 
 		issueAccess.save(issue);
 		return mapToResponse(issue);
@@ -232,6 +247,18 @@ public class IssueService {
 			user.getObjId());
 
 		updateIssuePosition(issueId, toStatusId);
+
+		// 상태 변경 알림 (담당자/보고자)
+		String statusMsg = "[" + issue.getIssueKey() + "] 상태가 " + toStatus.getStatusNm() + "(으)로 변경되었습니다";
+		if (issue.getAssigneeId() != null && !issue.getAssigneeId().equals(user.getObjId())) {
+			notificationService.send(issue.getAssigneeId(), "ISSUE_STATUS_CHANGED",
+				"이슈 상태 변경", statusMsg, "ISSUE", issueId);
+		}
+		if (!issue.getReporterId().equals(user.getObjId())
+				&& !issue.getReporterId().equals(issue.getAssigneeId())) {
+			notificationService.send(issue.getReporterId(), "ISSUE_STATUS_CHANGED",
+				"이슈 상태 변경", statusMsg, "ISSUE", issueId);
+		}
 
 		return mapToResponse(issue);
 	}

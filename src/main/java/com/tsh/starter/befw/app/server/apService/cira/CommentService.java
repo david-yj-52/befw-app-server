@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsh.starter.befw.app.server.apService.cira.NotificationService;
 import com.tsh.starter.befw.app.server.apService.cira.dto.AddReactionRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CommentReactionResponse;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CommentResponse;
@@ -39,6 +40,7 @@ public class CommentService {
 	private final SnCiraIssueAccess issueAccess;
 	private final GsUserAccess userAccess;
 	private final SnCiraCommentReactionAccess commentReactionAccess;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public CommentResponse createComment(String issueId, CreateCommentRequest request) {
@@ -71,6 +73,35 @@ public class CommentService {
 			.build();
 
 		commentAccess.save(comment);
+
+		// 댓글 알림: 담당자/보고자에게 발송 (본인 제외), @멘션 파싱
+		String commentTitle = "새 댓글이 달렸습니다";
+		String commentMsg = "[" + issue.getIssueKey() + "] " + request.getContent();
+		java.util.Set<String> notified = new java.util.HashSet<>();
+		notified.add(author.getObjId());
+
+		if (issue.getAssigneeId() != null && notified.add(issue.getAssigneeId())) {
+			notificationService.send(issue.getAssigneeId(), "COMMENT_ADDED",
+				commentTitle, commentMsg, "ISSUE", issueId);
+		}
+		if (notified.add(issue.getReporterId())) {
+			notificationService.send(issue.getReporterId(), "COMMENT_ADDED",
+				commentTitle, commentMsg, "ISSUE", issueId);
+		}
+
+		// @멘션 파싱: @userId 패턴
+		java.util.regex.Pattern mentionPattern = java.util.regex.Pattern.compile("@([\\w.-]+)");
+		java.util.regex.Matcher matcher = mentionPattern.matcher(request.getContent());
+		while (matcher.find()) {
+			String mentionEmail = matcher.group(1);
+			userAccess.findByEmail(mentionEmail).ifPresent(mentioned -> {
+				if (notified.add(mentioned.getObjId())) {
+					notificationService.send(mentioned.getObjId(), "COMMENT_MENTIONED",
+						"댓글에서 멘션되었습니다", commentMsg, "ISSUE", issueId);
+				}
+			});
+		}
+
 		return mapToResponse(comment, false, author.getObjId());
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsh.starter.befw.app.server.apService.cira.NotificationService;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CompleteSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateSprintRequest;
 import com.tsh.starter.befw.app.server.apService.cira.dto.IssueResponse;
@@ -48,6 +49,7 @@ public class SprintService {
 	private final SnCiraIssueStatusAccess issueStatusAccess;
 	private final GsUserAccess userAccess;
 	private final IssueService issueService;
+	private final NotificationService notificationService;
 
 	@Transactional
 	public SprintResponse createSprint(String projectId, CreateSprintRequest request) {
@@ -162,6 +164,12 @@ public class SprintService {
 		sprint.setEvtNm("StartSprint");
 		sprint.setPrevEvntNm("CreateSprint");
 		sprintAccess.save(sprint);
+
+		// 프로젝트 멤버 전체에게 스프린트 시작 알림
+		notifyProjectMembers(sprint.getProjectId(),
+			"SPRINT_STARTED", "스프린트가 시작되었습니다",
+			"[" + sprint.getSprintNm() + "] 스프린트가 시작되었습니다.", "SPRINT", sprint.getObjId());
+
 		return mapToResponse(sprint);
 	}
 
@@ -208,6 +216,12 @@ public class SprintService {
 		sprint.setEvtNm("CompleteSprint");
 		sprint.setPrevEvntNm("StartSprint");
 		sprintAccess.save(sprint);
+
+		// 프로젝트 멤버 전체에게 스프린트 종료 알림
+		notifyProjectMembers(sprint.getProjectId(),
+			"SPRINT_COMPLETED", "스프린트가 완료되었습니다",
+			"[" + sprint.getSprintNm() + "] 스프린트가 완료되었습니다.", "SPRINT", sprint.getObjId());
+
 		return mapToResponse(sprint);
 	}
 
@@ -299,5 +313,12 @@ public class SprintService {
 			.createdAt(model.getCreatedAt())
 			.modifiedAt(model.getModifiedAt())
 			.build();
+	}
+
+	private void notifyProjectMembers(String projectId, String type, String title,
+			String message, String resourceType, String resourceId) {
+		projectMemberAccess.findAllByProjectId(projectId).forEach(member ->
+			notificationService.send(member.getUserId(), type, title, message, resourceType, resourceId)
+		);
 	}
 }
