@@ -1,6 +1,10 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraAutoExecution;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.tsh.starter.befw.lib.core.data.orm.common.access.AbstractCrudService;
@@ -18,6 +22,18 @@ public class SnCiraAutoExecutionAccess extends AbstractCrudService<SnCiraAutoExe
 	@Override
 	protected BaseJpaRepository<SnCiraAutoExecutionModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraAutoExecutionModel> findRecentByRuleIdAndIssueId(String ruleId, String issueId, OffsetDateTime since) {
+		return repo.findRecentByRuleIdAndIssueId(ruleId, issueId, since);
+	}
+
+	public List<SnCiraAutoExecutionModel> findByRuleId(String ruleId) {
+		return repo.findByRuleIdOrderByExecutedAtDesc(ruleId);
+	}
+
+	public List<SnCiraAutoExecutionModel> findByRuleIdPaged(String ruleId, int size) {
+		return repo.findByRuleIdOrderByExecutedAtDesc(ruleId, PageRequest.of(0, size));
 	}
 
 }

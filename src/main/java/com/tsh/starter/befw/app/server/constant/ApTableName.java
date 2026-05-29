@@ -47,4 +47,6 @@ public class ApTableName {
 	public static final String SN_CIRA_MILESTONE_ISSUE = "SN_CIRA_MILESTONE_ISSUE";
 	public static final String SN_CIRA_SAVED_FILTER = "SN_CIRA_SAVED_FILTER";
 	public static final String SN_CIRA_ISSUE_SEARCH_IDX = "SN_CIRA_ISSUE_SEARCH_IDX";
+	public static final String SN_CIRA_WIKI_PAGE = "SN_CIRA_WIKI_PAGE";
+	public static final String SN_CIRA_WIKI_PAGE_VER = "SN_CIRA_WIKI_PAGE_VER";
 }

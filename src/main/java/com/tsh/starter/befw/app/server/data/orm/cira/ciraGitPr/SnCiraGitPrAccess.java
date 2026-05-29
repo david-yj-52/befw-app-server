@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraGitPr;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,18 @@ public class SnCiraGitPrAccess extends AbstractCrudService<SnCiraGitPrModel, Str
 	@Override
 	protected BaseJpaRepository<SnCiraGitPrModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraGitPrModel> findByRepoId(String repoId) {
+		return repo.findByRepoId(repoId);
+	}
+
+	public List<SnCiraGitPrModel> findByIssueId(String issueId) {
+		return repo.findByIssueId(issueId);
+	}
+
+	public Optional<SnCiraGitPrModel> findByRepoIdAndPrNo(String repoId, Integer prNo) {
+		return repo.findByRepoIdAndPrNo(repoId, prNo);
 	}
 
 }

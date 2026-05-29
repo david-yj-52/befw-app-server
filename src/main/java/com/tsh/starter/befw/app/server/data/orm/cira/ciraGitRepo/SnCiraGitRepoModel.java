@@ -33,16 +33,22 @@ public class SnCiraGitRepoModel extends BaseModel {
 	@Column(name = "PROJECT_ID", length = 100, nullable = false)
 	private String projectId;
 
+	@Column(name = "REPO_NM", length = 255, nullable = false)
+	private String repoNm;
+
 	@Column(name = "PROVIDER", length = 20, nullable = false)
 	private String provider;
 
 	@Column(name = "REPO_URL", length = 500, nullable = false)
 	private String repoUrl;
 
-	@Column(name = "ACCESS_TOKEN_ENC")
+	@Column(name = "ACCESS_TOKEN_ENC", length = 1000)
 	private String accessTokenEnc;
 
 	@Column(name = "DEFAULT_BRANCH", length = 100, nullable = false)
 	private String defaultBranch;
+
+	@Column(name = "WEBHOOK_SECRET", length = 500)
+	private String webhookSecret;
 
 }

@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraIssueVersion;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,23 @@ public class SnCiraIssueVersionAccess extends AbstractCrudService<SnCiraIssueVer
 	@Override
 	protected BaseJpaRepository<SnCiraIssueVersionModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraIssueVersionModel> findByVersionId(String versionId) {
+		return repo.findByVersionId(versionId);
+	}
+
+	public List<SnCiraIssueVersionModel> findByVersionIdAndRelType(String versionId, String relType) {
+		return repo.findByVersionIdAndRelType(versionId, relType);
+	}
+
+	public List<SnCiraIssueVersionModel> findByIssueId(String issueId) {
+		return repo.findByIssueId(issueId);
+	}
+
+	public Optional<SnCiraIssueVersionModel> findByIssueIdAndVersionIdAndRelType(
+		String issueId, String versionId, String relType) {
+		return repo.findByIssueIdAndVersionIdAndRelType(issueId, versionId, relType);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraAutoRule;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,18 @@ public class SnCiraAutoRuleAccess extends AbstractCrudService<SnCiraAutoRuleMode
 	@Override
 	protected BaseJpaRepository<SnCiraAutoRuleModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraAutoRuleModel> findActiveByProjectId(String projectId) {
+		return repo.findByProjectIdAndIsActiveTrueOrderBySortOrdAsc(projectId);
+	}
+
+	public List<SnCiraAutoRuleModel> findByProjectId(String projectId) {
+		return repo.findByProjectIdOrderBySortOrdAsc(projectId);
+	}
+
+	public List<SnCiraAutoRuleModel> findActiveByProjectIdAndTriggerType(String projectId, String triggerType) {
+		return repo.findActiveByProjectIdAndTriggerType(projectId, triggerType);
 	}
 
 }

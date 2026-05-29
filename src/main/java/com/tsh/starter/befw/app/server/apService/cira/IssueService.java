@@ -12,6 +12,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.context.ApplicationEventPublisher;
+
+import com.tsh.starter.befw.app.server.apService.cira.automation.events.IssueAssignedEvent;
+import com.tsh.starter.befw.app.server.apService.cira.automation.events.IssueCreatedEvent;
+import com.tsh.starter.befw.app.server.apService.cira.automation.events.IssueStatusChangedEvent;
 import com.tsh.starter.befw.app.server.apService.cira.dto.ChangeStatusRequest;
 import com.tsh.starter.befw.app.server.apService.cira.NotificationService;
 import com.tsh.starter.befw.app.server.apService.cira.dto.CreateIssueRequest;
@@ -67,6 +72,7 @@ public class IssueService {
 	private final SnCiraBoardColumnAccess boardColumnAccess;
 	private final SnCiraBoardAccess boardAccess;
 	private final NotificationService notificationService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional
 	public IssueResponse createIssue(String projectId, CreateIssueRequest request) {
@@ -109,6 +115,9 @@ public class IssueService {
 			.build();
 
 		issueAccess.save(issue);
+
+		// 자동화 이벤트 발행: 이슈 생성
+		eventPublisher.publishEvent(new IssueCreatedEvent(this, issue.getObjId(), projectId, reporter.getObjId()));
 
 		// Record Log
 		recordLog(issue.getObjId(), "Issue", null, "Created", reporter.getObjId());
@@ -184,6 +193,9 @@ public class IssueService {
 				"[" + issue.getIssueKey() + "] " + issue.getTitle(),
 				"ISSUE", issue.getObjId()
 			);
+			// 자동화 이벤트 발행: 이슈 담당자 변경
+			eventPublisher.publishEvent(new IssueAssignedEvent(
+				this, issueId, issue.getProjectId(), request.getAssigneeId(), user.getObjId()));
 		}
 
 		issueAccess.save(issue);
@@ -259,6 +271,10 @@ public class IssueService {
 			notificationService.send(issue.getReporterId(), "ISSUE_STATUS_CHANGED",
 				"이슈 상태 변경", statusMsg, "ISSUE", issueId);
 		}
+
+		// 자동화 이벤트 발행: 이슈 상태 변경
+		eventPublisher.publishEvent(new IssueStatusChangedEvent(
+			this, issueId, issue.getProjectId(), fromStatusId, toStatusId, user.getObjId()));
 
 		return mapToResponse(issue);
 	}

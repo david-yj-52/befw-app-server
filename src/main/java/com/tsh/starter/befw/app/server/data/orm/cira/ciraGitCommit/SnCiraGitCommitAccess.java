@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraGitCommit;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,18 @@ public class SnCiraGitCommitAccess extends AbstractCrudService<SnCiraGitCommitMo
 	@Override
 	protected BaseJpaRepository<SnCiraGitCommitModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraGitCommitModel> findByRepoId(String repoId) {
+		return repo.findByRepoId(repoId);
+	}
+
+	public List<SnCiraGitCommitModel> findByIssueId(String issueId) {
+		return repo.findByIssueId(issueId);
+	}
+
+	public Optional<SnCiraGitCommitModel> findByRepoIdAndCommitHash(String repoId, String commitHash) {
+		return repo.findByRepoIdAndCommitHash(repoId, commitHash);
 	}
 
 }

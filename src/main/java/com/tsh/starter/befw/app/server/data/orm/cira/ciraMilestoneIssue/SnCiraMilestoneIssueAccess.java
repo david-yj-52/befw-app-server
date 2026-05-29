@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraMilestoneIssue;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,18 @@ public class SnCiraMilestoneIssueAccess extends AbstractCrudService<SnCiraMilest
 	@Override
 	protected BaseJpaRepository<SnCiraMilestoneIssueModel, String> getRepository() {
 		return repo;
+	}
+
+	public List<SnCiraMilestoneIssueModel> findByMilestoneId(String milestoneId) {
+		return repo.findByMilestoneId(milestoneId);
+	}
+
+	public List<SnCiraMilestoneIssueModel> findByIssueId(String issueId) {
+		return repo.findByIssueId(issueId);
+	}
+
+	public Optional<SnCiraMilestoneIssueModel> findByMilestoneIdAndIssueId(String milestoneId, String issueId) {
+		return repo.findByMilestoneIdAndIssueId(milestoneId, issueId);
 	}
 
 }

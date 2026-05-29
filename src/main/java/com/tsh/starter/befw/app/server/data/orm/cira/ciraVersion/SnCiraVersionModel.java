@@ -1,5 +1,8 @@
 package com.tsh.starter.befw.app.server.data.orm.cira.ciraVersion;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
 import org.hibernate.envers.Audited;
 
 import com.tsh.starter.befw.app.server.constant.ApTableName;
@@ -33,16 +36,19 @@ public class SnCiraVersionModel extends BaseModel {
 	@Column(name = "PROJECT_ID", length = 100, nullable = false)
 	private String projectId;
 
-	@Column(name = "VERSION_NM", length = 100, nullable = false)
+	@Column(name = "VERSION_NM", length = 50, nullable = false)
 	private String versionNm;
 
-	@Column(name = "DESCR")
+	@Column(name = "DESCR", columnDefinition = "TEXT")
 	private String descr;
 
-	@Column(name = "PLAN_REL_DT")
-	private java.time.LocalDate planRelDt;
+	@Column(name = "STATUS", length = 50, nullable = false)
+	private String status;
 
-	@Column(name = "RELEASED_DT")
-	private java.time.LocalDate releasedDt;
+	@Column(name = "PLAN_REL_DT")
+	private LocalDate planRelDt;
+
+	@Column(name = "RELEASED_AT", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+	private OffsetDateTime releasedAt;
 
 }

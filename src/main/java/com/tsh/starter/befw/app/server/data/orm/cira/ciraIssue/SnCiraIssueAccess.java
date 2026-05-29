@@ -51,4 +51,8 @@ public class SnCiraIssueAccess extends AbstractCrudService<SnCiraIssueModel, Str
 		return repo.findBySprintIds(sprintIds);
 	}
 
+	public java.util.Optional<SnCiraIssueModel> findByIssueKey(String issueKey) {
+		return repo.findByIssueKeyAndDeletedAtIsNull(issueKey);
+	}
+
 }

@@ -12,6 +12,8 @@ import com.tsh.starter.befw.lib.core.data.orm.common.repo.BaseJpaRepository;
 @Repository
 public interface SnCiraIssueRepo extends BaseJpaRepository<SnCiraIssueModel, String> {
 
+	java.util.Optional<SnCiraIssueModel> findByIssueKeyAndDeletedAtIsNull(String issueKey);
+
 	List<SnCiraIssueModel> findBySprintIdAndDeletedAtIsNull(String sprintId);
 
 	List<SnCiraIssueModel> findByProjectIdAndDeletedAtIsNull(String projectId);

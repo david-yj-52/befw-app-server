@@ -18,7 +18,9 @@ springdoc:
 spring:
   flyway:
     enabled: true
-    locations: filesystem:${DDL_BASE_PATH:C:/workspace/tsh/boilerplate/be/befw/ddl/cira}/migration
+    locations:
+      - filesystem:${DDL_BASE_PATH:C:/workspace/tsh/boilerplate/be/befw/ddl/cira}/migration
+      - classpath:db/migration
     baseline-on-migrate: false
     validate-on-migrate: true
     table: flyway_schema_history
