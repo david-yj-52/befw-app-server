@@ -81,7 +81,7 @@ class CommentServiceTest {
         SnCiraIssueModel issue = issueModel(ISSUE_ID, ISSUE_KEY);
 
         SnCiraCommentModel root    = commentModel(COMMENT_ID,    ISSUE_ID, USER_ID, null, UseStatCd.Usable);
-        SnCiraCommentModel deleted = commentModel("comment-del", ISSUE_ID, USER_ID, null, UseStatCd.Deleted);
+        SnCiraCommentModel deleted = commentModel("comment-del", ISSUE_ID, USER_ID, null, UseStatCd.Delete);
 
         given(userAccess.findByEmail(USER_EMAIL)).willReturn(Optional.of(userModel(USER_ID)));
         given(issueAccess.findById(ISSUE_ID)).willReturn(issue);
@@ -116,7 +116,7 @@ class CommentServiceTest {
     @Test
     @DisplayName("updateComment - 삭제된 댓글은 COMMENT_NOT_FOUND 에러")
     void updateComment_deletedComment_throwsCiraException() {
-        SnCiraCommentModel deleted = commentModel(COMMENT_ID, ISSUE_ID, USER_ID, null, UseStatCd.Deleted);
+        SnCiraCommentModel deleted = commentModel(COMMENT_ID, ISSUE_ID, USER_ID, null, UseStatCd.Delete);
 
         given(userAccess.findByEmail(USER_EMAIL)).willReturn(Optional.of(userModel(USER_ID)));
         given(commentAccess.findById(COMMENT_ID)).willReturn(deleted);

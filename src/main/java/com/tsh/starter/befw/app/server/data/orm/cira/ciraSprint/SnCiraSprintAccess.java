@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tsh.starter.befw.lib.core.data.constant.UseStatCd;
 import com.tsh.starter.befw.lib.core.data.orm.common.access.AbstractCrudService;
 import com.tsh.starter.befw.lib.core.data.orm.common.repo.BaseJpaRepository;
 
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class SnCiraSprintAccess extends AbstractCrudService<SnCiraSprintModel, String> {
+
+	private static final String STAT_ACTIVE = "Active";
 
 	@Autowired
 	SnCiraSprintRepo repo;
@@ -28,6 +31,14 @@ public class SnCiraSprintAccess extends AbstractCrudService<SnCiraSprintModel, S
 
 	public List<SnCiraSprintModel> findByProjectIdAndSprintStat(String projectId, String sprintStat) {
 		return repo.findByProjectIdAndSprintStat(projectId, sprintStat);
+	}
+
+	/**
+	 * 전체 테넌트에서 Active + 삭제되지 않은 스프린트 목록 반환.
+	 * CQL openSprints() 함수 처리용.
+	 */
+	public List<SnCiraSprintModel> findAllActive() {
+		return repo.findBySprintStatAndUseStatCd(STAT_ACTIVE, UseStatCd.Usable);
 	}
 
 }

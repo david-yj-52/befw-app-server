@@ -1,4 +1,4 @@
-﻿cira:
+cira:
   storage:
     endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
     access-key: ${MINIO_ACCESS_KEY:minioadmin}
@@ -13,17 +13,21 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
-  packages-to-scan: com.tsh.starter.befw   # 蹂몄씤 ?⑦궎吏 寃쎈줈
+  packages-to-scan: com.tsh.starter.befw
 
 spring:
   flyway:
     enabled: true
     locations:
-      - filesystem:${DDL_BASE_PATH:C:/workspace/tsh/boilerplate/be/befw/ddl/cira}/migration
       - classpath:db/migration
-    baseline-on-migrate: false
+    baseline-on-migrate: true
+    baseline-version: 0
     validate-on-migrate: true
+    ignore-migration-patterns: "*:missing"
     table: flyway_schema_history
+    # === 개발 환경에서만 활성화 추천 ===
+    #    clean-on-validation-error: true     # ← 이 옵션 추가
+    clean-disabled: false               # ← 이 옵션도 함께 false로 설정
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME}
     username: ${DB_USERNAME}
@@ -32,14 +36,14 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update              # ?댁쁺?먮뒗 none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         default_schema: public
       org.hibernate.envers:
-        audit_table_suffix: _HIST     # ?대젰 ?뚯씠釉붾챸 ?ㅼ뿉 _HISTORY 遺숈엫
+        audit_table_suffix: _HIST
 
 
   cache:
@@ -74,11 +78,11 @@ application:
 
     enable:
       solace:
-        enable: true
+        enable: false
         pub: true
         sub: true
       kafka:
-        enable: true
+        enable: false
         pub: true
         sub: true
 
@@ -119,9 +123,6 @@ messaging:
           store:
             trust: C:\
             key: C:\
-
-
-
-
-
-
+server:
+  servlet:
+    context-path: /tsh

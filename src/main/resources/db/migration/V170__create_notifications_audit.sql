@@ -20,13 +20,15 @@ CREATE TABLE IF NOT EXISTS SN_CIRA_NOTIFICATION (
     SRV_ID             VARCHAR(100),
     TENANT             VARCHAR(100),
     TRACE_ID           VARCHAR(100),
-    EVT_NM             VARCHAR(100),
+    EVNT_NM             VARCHAR(100),
     PREV_EVNT_NM       VARCHAR(100),
+    ACT_CD             VARCHAR(100),
+    ACT_CM             TEXT,
     USE_STAT_CD        VARCHAR(20),
-    CRTE_DT            TIMESTAMP WITH TIME ZONE,
-    UPDT_DT            TIMESTAMP WITH TIME ZONE,
-    CRTE_ID            VARCHAR(100),
-    UPDT_ID            VARCHAR(100),
+    CREATED_AT            TIMESTAMP WITH TIME ZONE,
+    MODIFIED_AT            TIMESTAMP WITH TIME ZONE,
+    CREATED_BY            VARCHAR(100),
+    MODIFIED_BY            VARCHAR(100),
     CONSTRAINT pk_ciraNotification PRIMARY KEY (OBJ_ID)
 );
 
@@ -47,13 +49,15 @@ CREATE TABLE IF NOT EXISTS SN_CIRA_NOTIF_PREF (
     SRV_ID             VARCHAR(100),
     TENANT             VARCHAR(100),
     TRACE_ID           VARCHAR(100),
-    EVT_NM             VARCHAR(100),
+    EVNT_NM             VARCHAR(100),
     PREV_EVNT_NM       VARCHAR(100),
+    ACT_CD             VARCHAR(100),
+    ACT_CM             TEXT,
     USE_STAT_CD        VARCHAR(20),
-    CRTE_DT            TIMESTAMP WITH TIME ZONE,
-    UPDT_DT            TIMESTAMP WITH TIME ZONE,
-    CRTE_ID            VARCHAR(100),
-    UPDT_ID            VARCHAR(100),
+    CREATED_AT            TIMESTAMP WITH TIME ZONE,
+    MODIFIED_AT            TIMESTAMP WITH TIME ZONE,
+    CREATED_BY            VARCHAR(100),
+    MODIFIED_BY            VARCHAR(100),
     CONSTRAINT pk_ciraNotifPref    PRIMARY KEY (OBJ_ID),
     CONSTRAINT uk_ciraNotifPref_01 UNIQUE (USER_ID, CHANNEL, EVENT_TYPE)
 );
@@ -77,16 +81,18 @@ CREATE TABLE IF NOT EXISTS SN_CIRA_AUDIT_LOG (
     SRV_ID             VARCHAR(100),
     TENANT             VARCHAR(100),
     TRACE_ID           VARCHAR(100),
-    EVT_NM             VARCHAR(100),
+    EVNT_NM             VARCHAR(100),
     PREV_EVNT_NM       VARCHAR(100),
+    ACT_CD             VARCHAR(100),
+    ACT_CM             TEXT,
     USE_STAT_CD        VARCHAR(20),
-    CRTE_DT            TIMESTAMP WITH TIME ZONE,
-    UPDT_DT            TIMESTAMP WITH TIME ZONE,
-    CRTE_ID            VARCHAR(100),
-    UPDT_ID            VARCHAR(100),
+    CREATED_AT            TIMESTAMP WITH TIME ZONE,
+    MODIFIED_AT            TIMESTAMP WITH TIME ZONE,
+    CREATED_BY            VARCHAR(100),
+    MODIFIED_BY            VARCHAR(100),
     CONSTRAINT pk_ciraAuditLog PRIMARY KEY (OBJ_ID)
 );
 
 CREATE INDEX IF NOT EXISTS idx_ciraAuditLog_actor    ON SN_CIRA_AUDIT_LOG (ACTOR_ID);
 CREATE INDEX IF NOT EXISTS idx_ciraAuditLog_resource ON SN_CIRA_AUDIT_LOG (RESOURCE_TYPE, RESOURCE_ID);
-CREATE INDEX IF NOT EXISTS idx_ciraAuditLog_crte     ON SN_CIRA_AUDIT_LOG (CRTE_DT DESC);
+CREATE INDEX IF NOT EXISTS idx_ciraAuditLog_crte     ON SN_CIRA_AUDIT_LOG (CREATED_AT DESC);

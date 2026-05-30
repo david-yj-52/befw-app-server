@@ -207,10 +207,9 @@ public class CqlQueryBuilder {
 		List<String> result = new ArrayList<>();
 		for (String v : values) {
 			if ("openSprints".equals(v)) {
-				// 전체 테넌트에서 ACTIVE 스프린트 ID 조회
-				List<String> activeIds = sprintAccess.findAll()
+				// Active 상태 스프린트 ID 조회 (Access 계층 경유)
+				List<String> activeIds = sprintAccess.findAllActive()
 					.stream()
-					.filter(s -> "ACTIVE".equals(s.getSprintStat()))
 					.map(s -> s.getObjId())
 					.collect(Collectors.toList());
 				result.addAll(activeIds);
