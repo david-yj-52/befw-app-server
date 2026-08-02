@@ -2,7 +2,7 @@ package com.tsh.starter.befw.app.server;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.MessageInfoVo;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.apService.util.ServerNameUtil;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
@@ -30,7 +30,7 @@ public class ApProcessVo<T extends ApMessageBody> extends ApCommonProcessVo<T> {
 
 	boolean logicCompYn;
 
-	SolaceMessageInfoVo msgInfoVo;
+	MessageInfoVo msgInfoVo;
 
 	ConcurrentHashMap<String, Object> objMap;
 

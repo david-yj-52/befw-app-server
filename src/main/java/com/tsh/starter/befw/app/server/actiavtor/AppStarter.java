@@ -1,14 +1,21 @@
 package com.tsh.starter.befw.app.server.actiavtor;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 import com.solacesystems.jcsmp.JCSMPException;
 import com.solacesystems.jcsmp.JCSMPSession;
 import com.tsh.starter.befw.lib.core.config.MessagingProperties;
 import com.tsh.starter.befw.lib.core.messaging.MessagingConfManager;
+import com.tsh.starter.befw.lib.core.messaging.rabbitmq.inbound.RabbitMqInboundGateway;
+import com.tsh.starter.befw.lib.core.messaging.rabbitmq.inbound.RabbitMqInboundManager;
+import com.tsh.starter.befw.lib.core.messaging.rabbitmq.outbound.RabbitMqMessagePublisher;
 import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceInboundGateway;
 import com.tsh.starter.befw.lib.core.messaging.solace.inbound.SolaceInboundManager;
 import com.tsh.starter.befw.lib.core.messaging.solace.outbound.SolaceMessagePublisher;
@@ -34,6 +41,15 @@ public class AppStarter implements ApplicationRunner {
 	@Autowired
 	SolaceMessagePublisher solaceMessagePublisher;
 
+	@Autowired
+	RabbitMqInboundGateway rabbitMqInboundGateway;
+
+	@Autowired
+	RabbitMqInboundManager rabbitMqInboundManager;
+
+	@Autowired
+	RabbitMqMessagePublisher rabbitMqMessagePublisher;
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 
@@ -56,6 +72,24 @@ public class AppStarter implements ApplicationRunner {
 				try {
 					solaceMessagePublisher.setSession(solaceSession);
 				} catch (JCSMPException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		if (Boolean.parseBoolean(messagingProperties.getRabbitMqEnable())) {
+			Connection rabbitMqConnection = this.messagingConfManager.getRabbitMqDefaultConnection();
+
+			if (Boolean.parseBoolean(messagingProperties.getRabbitMqSubEnable())) {
+				this.rabbitMqInboundGateway.setConnection(rabbitMqConnection);
+				this.rabbitMqInboundManager.registerAll();
+			}
+
+			if (Boolean.parseBoolean(messagingProperties.getRabbitMqPubEnable())) {
+				try {
+					Channel publishChannel = rabbitMqConnection.createChannel();
+					rabbitMqMessagePublisher.setChannel(publishChannel);
+				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}

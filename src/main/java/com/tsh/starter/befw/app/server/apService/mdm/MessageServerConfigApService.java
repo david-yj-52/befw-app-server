@@ -11,7 +11,7 @@ import com.solacesystems.jcsmp.JCSMPException;
 import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.AbstractApService;
 import com.tsh.starter.befw.app.server.interfaces.controller.mdm.dto.GnMsgSrvConnRes;
-import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.MessageInfoVo;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.orm.msgServiceConn.gsMsgSrvConn.GsMsgSrvConnAccess;
@@ -83,7 +83,7 @@ public class MessageServerConfigApService extends AbstractApService<GnMsgSrvConn
 	@Override
 	protected ApiResponse<GnMsgSrvConnRes> resultAction(ApProcessVo<AddMsgServerInf.Body> procVo) {
 
-		SolaceMessageInfoVo msgInfo = procVo.getMsgInfoVo();
+		MessageInfoVo msgInfo = procVo.getMsgInfoVo();
 		String selectorKey = msgInfo.getSelectorKey();
 		String responseTopicName = msgInfo.getResponseTopic();
 

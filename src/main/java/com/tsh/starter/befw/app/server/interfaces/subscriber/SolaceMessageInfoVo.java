@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Data
-public class SolaceMessageInfoVo {
+public class SolaceMessageInfoVo implements MessageInfoVo {
 
 	BytesXMLMessage msgObject;
 	String responseTopic;

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solacesystems.jcsmp.JCSMPException;
 import com.tsh.starter.befw.app.server.ApProcessVo;
 import com.tsh.starter.befw.app.server.apService.AbstractApService;
-import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.MessageInfoVo;
 import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceTaskReceiver;
 import com.tsh.starter.befw.lib.core.ApMessage;
 import com.tsh.starter.befw.lib.core.data.constant.MsgRepStatCd;
@@ -131,7 +131,7 @@ public class AgentHealthCheckTriggerApService extends AbstractApService<ApProces
 	private GsSolMsgRepModel generateModel(ApProcessVo<?> procVo) {
 		log.info("start generate model");
 
-		SolaceMessageInfoVo infoVo = procVo.getMsgInfoVo();
+		MessageInfoVo infoVo = procVo.getMsgInfoVo();
 		GsSolMsgRepModel model = GsSolMsgRepModel.builder()
 			.reqSrvNm(ApSystemList.SERVER.name())
 			.reqTraceId(procVo.getTraceId())

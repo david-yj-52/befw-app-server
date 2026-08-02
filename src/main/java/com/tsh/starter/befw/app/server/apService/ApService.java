@@ -1,7 +1,7 @@
 package com.tsh.starter.befw.app.server.apService;
 
 import com.tsh.starter.befw.app.server.ApProcessVo;
-import com.tsh.starter.befw.app.server.interfaces.subscriber.SolaceMessageInfoVo;
+import com.tsh.starter.befw.app.server.interfaces.subscriber.MessageInfoVo;
 import com.tsh.starter.befw.lib.core.interfaces.InterfaceType;
 import com.tsh.starter.befw.lib.core.interfaces.rest.ApiResponse;
 import com.tsh.starter.befw.lib.core.spec.ApMessageBody;
@@ -15,5 +15,5 @@ public interface ApService<R, T extends ApMessageBody> {
 
 	ApMessageList getSupportedEvent();
 
-	void handle(String payload, InterfaceType interfaceType, SolaceMessageInfoVo infoVo) throws Exception;
+	void handle(String payload, InterfaceType interfaceType, MessageInfoVo infoVo) throws Exception;
 }
