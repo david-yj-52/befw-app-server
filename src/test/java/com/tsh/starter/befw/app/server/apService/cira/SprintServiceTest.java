@@ -73,7 +73,7 @@ class SprintServiceTest {
         given(projectMemberAccess.findAllByUserId(USER_ID)).willReturn(List.of(memberModel(USER_ID, PROJECT_ID)));
         given(sprintAccess.findByProjectIdAndSprintStat(PROJECT_ID, "Active")).willReturn(List.of());
         given(sprintAccess.save(any())).willReturn(sprint);
-        given(projectMemberAccess.findByProjectId(PROJECT_ID)).willReturn(List.of());
+        given(projectMemberAccess.findAllByProjectId(PROJECT_ID)).willReturn(List.of());
 
         var result = sprintService.startSprint(SPRINT_ID);
 
@@ -133,37 +133,37 @@ class SprintServiceTest {
     // ─── Helpers ───────────────────────────────────────────────────────────────
 
     private SnCiraSprintModel sprintModel(String id, String projectId, String stat) {
-        SnCiraSprintModel m = new SnCiraSprintModel();
-        m.setObjId(id);
-        m.setProjectId(projectId);
-        m.setSprintNm("Sprint " + id);
-        m.setSprintStat(stat);
-        m.setUseStatCd(UseStatCd.Usable);
-        return m;
+        return SnCiraSprintModel.builder()
+            .objId(id)
+            .projectId(projectId)
+            .sprintNm("Sprint " + id)
+            .sprintStat(stat)
+            .useStatCd(UseStatCd.Usable)
+            .build();
     }
 
     private SnCiraProjectMemberModel memberModel(String userId, String projectId) {
-        SnCiraProjectMemberModel m = new SnCiraProjectMemberModel();
-        m.setUserId(userId);
-        m.setProjectId(projectId);
-        m.setMemberRole("MEMBER");
-        m.setUseStatCd(UseStatCd.Usable);
-        return m;
+        return SnCiraProjectMemberModel.builder()
+            .userId(userId)
+            .projectId(projectId)
+            .role("MEMBER")
+            .useStatCd(UseStatCd.Usable)
+            .build();
     }
 
     private GsUserModel userModel(String userId) {
-        GsUserModel m = new GsUserModel();
-        m.setObjId(userId);
-        m.setEmail(USER_EMAIL);
-        return m;
+        return GsUserModel.builder()
+            .objId(userId)
+            .email(USER_EMAIL)
+            .build();
     }
 
     private SnCiraProjectModel projectModel(String projectId) {
-        SnCiraProjectModel m = new SnCiraProjectModel();
-        m.setObjId(projectId);
-        m.setProjectNm("Test Project");
-        m.setProjectKey("PROJ");
-        m.setIssueSequence(0);
-        return m;
+        return SnCiraProjectModel.builder()
+            .objId(projectId)
+            .projectNm("Test Project")
+            .projectKey("PROJ")
+            .issueSequence(0)
+            .build();
     }
 }

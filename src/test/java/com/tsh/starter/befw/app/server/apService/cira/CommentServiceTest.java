@@ -148,28 +148,28 @@ class CommentServiceTest {
     // ─── Helpers ───────────────────────────────────────────────────────────────
 
     private SnCiraIssueModel issueModel(String id, String issueKey) {
-        SnCiraIssueModel m = new SnCiraIssueModel();
-        m.setObjId(id);
-        m.setIssueKey(issueKey);
-        m.setReporterId(USER_ID);
-        return m;
+        return SnCiraIssueModel.builder()
+            .objId(id)
+            .issueKey(issueKey)
+            .reporterId(USER_ID)
+            .build();
     }
 
     private SnCiraCommentModel commentModel(String id, String issueId, String authorId, String parentId, UseStatCd statCd) {
-        SnCiraCommentModel m = new SnCiraCommentModel();
-        m.setObjId(id);
-        m.setIssueId(issueId);
-        m.setAuthorId(authorId);
-        m.setParentId(parentId);
-        m.setContent("테스트 댓글");
-        m.setUseStatCd(statCd);
-        return m;
+        return SnCiraCommentModel.builder()
+            .objId(id)
+            .issueId(issueId)
+            .authorId(authorId)
+            .parentId(parentId)
+            .content("테스트 댓글")
+            .useStatCd(statCd)
+            .build();
     }
 
     private GsUserModel userModel(String userId) {
-        GsUserModel m = new GsUserModel();
-        m.setObjId(userId);
-        m.setEmail(USER_EMAIL);
-        return m;
+        return GsUserModel.builder()
+            .objId(userId)
+            .email(USER_EMAIL)
+            .build();
     }
 }
