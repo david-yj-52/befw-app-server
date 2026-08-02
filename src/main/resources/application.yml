@@ -85,6 +85,10 @@ application:
         enable: false
         pub: true
         sub: true
+      rabbitmq:
+        enable: false
+        pub: true
+        sub: true
 
 
 messaging:
