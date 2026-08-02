@@ -49,6 +49,33 @@
     </dependencies>
 
 
+    <!--
+        befw-app-server는 별도 GitHub 저장소라 로컬 relativePath(../befw/pom.xml)로 parent를
+        찾지 못하는 경우(CI 등) GitHub Packages에서 parent pom과 befw-lib-core를 내려받습니다.
+    -->
+    <repositories>
+        <repository>
+            <id>github-befw</id>
+            <url>https://maven.pkg.github.com/david-yj-52/befw</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>github-lib-core</id>
+            <url>https://maven.pkg.github.com/david-yj-52/befw-lib-core</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <build>
         <resources>
             <resource>
